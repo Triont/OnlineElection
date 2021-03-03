@@ -1,0 +1,72 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using System.Text
+@using System.Linq
+@using OnlineElection.ModelView
+@{
+    Dictionary<long, bool> keyValuePairs = new Dictionary<long, bool>();
+    bool checking = false;
+}
+@model ElectionView
+
+<div>
+    
+@ViewData["ElectName"]
+<br/>
+
+@if(User.Identity.IsAuthenticated)
+{
+    <p>Hello</p>
+  var str=  User.FindFirst("Voted elections")?.Value;
+  if(str!=null)
+  {
+        
+  keyValuePairs=(Dictionary<long, bool>) System.Text.Json.JsonSerializer.Deserialize(str, typeof(Dictionary<long, bool>));
+  }
+  
+}
+@if(keyValuePairs.ContainsKey(Model.Id))
+{
+ if(keyValuePairs[Model.Id]==false)
+ {
+    checking=true;
+ }
+}
+@if(checking || (!keyValuePairs.ContainsKey(Model.Id)))
+{
+<form asp-controller="Election" asp-action="Result" method="post">
+@for(int i=0;i<Model.CandidatesElect.Count;i++)
+{
+     <div style="display: inline-block">
+
+
+    <label >@Model.CandidatesElect[i]</label>
+    <input type="radio" asp-for="Selected" value="@Model.CandidatesElect[i]" />
+    <br/>
+    </div>
+
+    }
+    
+    <input type="hidden" asp-for="Id" value="@Model.Id" />  
+    <br />
+    @if(ViewData["Notification"]!=null)
+    {
+        <div>
+            @ViewData["Notification"];
+        </div>
+    }
+    else
+    {
+        <input class="btn" type="submit" />
+    }
+
+
+
+
+</form>
+}
+
+</div>

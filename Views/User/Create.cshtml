@@ -1,0 +1,52 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using OnlineElection.Models
+
+@model OnlineElection.ModelView.CreateUser
+@{
+  
+
+}
+
+@functions
+{
+    
+        
+    
+}
+<div>
+<form asp-controller="User" asp-action="Create" method="post">
+@Html.AntiForgeryToken();
+<label asp-for="FirstName">First name</label>
+<input type="text" asp-for="FirstName" />
+
+<label asp-for="SecondName">Second name</label>
+<input type="text" asp-for="SecondName" />
+
+<label asp-for="ThirdName">Third name</label>
+<input type="text" asp-for="ThirdName" />
+
+<label asp-for="Email">Email</label>
+<input type="email" asp-for="Email" />
+
+<label asp-for="_DateTime">Date of birth</label>
+<input type="date" asp-for="_DateTime" />
+
+
+<label asp-for="Pass">Password</label>
+<input type="password" asp-for="Pass" />
+
+<label asp-for="AgainPass">Confirm password</label>
+<input type="password" asp-for="AgainPass" />
+
+<input type="submit" />
+
+
+    
+
+</form>    
+
+
+</div>
+

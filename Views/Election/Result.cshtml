@@ -1,0 +1,36 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    
+}
+@using OnlineElection.ModelView
+@model  ResultView
+<div>
+
+  
+    
+    <div style="display: inline-block">
+
+
+        @for(int i=0;i<@Model.Names.Count;i++)
+        {
+                <div style="display: inline-block">
+
+                    @Model.Names[i] 
+                    @Model.Votes[i] votes and
+                    @Model.Percents[i] %
+
+                    </div>
+                 <br/>
+        }
+       </div>
+       <br/>
+       <div>
+           Winner is @Model.Names[0] with @Model.Votes[0] votes and @Model.Percents[0] %
+       </div>
+
+        
+      
+
+</div>
