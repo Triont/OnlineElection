@@ -5,9 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using OnlineElection.ModelView;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineElection.Controllers
 {
@@ -75,6 +78,76 @@ namespace OnlineElection.Controllers
         {
             appDbContext.People.Update((appDbContext.People.FirstOrDefault(q => q.Id == id)));
             return  Ok();
+        }
+
+        public async Task< IActionResult> Search(FoundElect foundElect)
+        {
+            List<Election> elections = new List<Election>();
+            if (foundElect.Name != null)
+            {
+
+                //var tmp =appDbContext.Elections.AsAsyncEnumerable()
+
+                //await foreach (var tt in tmp)
+                //{
+                //    if (tt.Name.Contains(foundElect.Name))
+                //    {
+                //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
+
+                //        if (!deser.ContainsKey(tt.Id))
+                //            elections.Add(tt);
+                //    }
+
+                //    else if (tt.JSON_Election_Candidates.Contains(foundElect.Name))
+                //    {
+                //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
+
+                //        if (!deser.ContainsKey(tt.Id))
+
+                //            elections.Add(tt);
+                //    }
+                //    else if (tt.Id == long.Parse(foundElect.Name))
+                //    {
+                //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
+
+                //        if (!deser.ContainsKey(tt.Id))
+
+                //            elections.Add(tt);
+                //    }
+
+
+
+
+
+                //}
+
+                if (appDbContext.Elections.Where(i => i.Name.Contains(foundElect.Name)) != null)
+                {
+                    var el = await appDbContext.Elections.Where(i => i.Name.Contains(foundElect.Name)).ToListAsync();
+                    foreach (var i in el)
+                    {
+                        elections.Add(i);
+                    }
+                }
+               
+                else if (await appDbContext.Elections.FirstOrDefaultAsync(i => i.JSON_Election_Candidates.Contains(foundElect.Name)) != null)
+                {
+                    var tq = await appDbContext.Elections.Where(i => i.JSON_Election_Candidates.Contains(foundElect.Name)).ToListAsync();
+                    foreach(var q in tq)
+                    {
+                        elections.Add(q);
+                    }
+                
+                }
+                else if (await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == long.Parse(foundElect.Name)) != null)
+                {
+                    var qq = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == long.Parse(foundElect.Name));
+                    elections.Add(qq);
+
+                }
+            }
+            return View(elections);
+
         }
 
     }

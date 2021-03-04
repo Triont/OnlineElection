@@ -1,11 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
+@using OnlineElection.ModelView
+@model FoundElect
+ 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <a href="/User/Create">New user</a>
-    <a href="/User/Login">Login</a>
+
+    @if(!User.Identity.IsAuthenticated)
+    {
+     <a href="/User/Login">Login</a>
+    }
     <h2>
     @Html.Label("", TempData["Name"]?.ToString())
     </h2> 
@@ -16,6 +22,13 @@
           <a href ="/User/Logout/">Log Out</a>
           <a href="/Election/Create/">Create election</a>
     }
+
+    <form asp-controller="Home" asp-action="Search">
+        <label> Enter name of election</label>
+        <input type="text" asp-for="Name" />
+        <input type="submit" value="Found!"/>
+
+    </form>
 
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>

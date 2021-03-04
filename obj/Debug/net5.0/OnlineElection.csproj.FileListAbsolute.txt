@@ -174,3 +174,5 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Onl
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\ref\OnlineElection.dll
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\OnlineElection.pdb
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\OnlineElection.genruntimeconfig.cache
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Home\Search.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\libman.json
