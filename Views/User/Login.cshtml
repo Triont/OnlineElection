@@ -1,12 +1,13 @@
-﻿
-@model OnlineElection.ModelView.LoginUser
-@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model OnlineElection.ModelView.LoginUser
 @{
+    var returnUrl = @Context.Request.Query["returnurl"];
 }
 
-<form asp-controller="User" asp-action="Login" asp-action="post">
+
+
+
+
+<form asp-controller="User" asp-action="Login" asp-route-returnurl="@returnUrl" asp-action="post">
 <label asp-for="Email">
     Your email
 
@@ -18,8 +19,8 @@
 
 </label>    
 <input type ="password" asp-for="Password" />
-<input type="submit" />
 
+<input type="submit" />
 
 </form>
 

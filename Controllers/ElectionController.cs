@@ -12,10 +12,12 @@ using System.Text.Json.Serialization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineElection.Controllers
 {
   
+    [Authorize]
     public class ElectionController : Controller
     {
        // private readonly UserManager<IdentityUser> userManager;

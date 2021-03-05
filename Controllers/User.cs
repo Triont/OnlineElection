@@ -135,9 +135,17 @@ namespace OnlineElection.Controllers
             }
         }
 
-        // GET: User/Delete/5
+    
+     
+        [HttpGet]
+        public  IActionResult Login()
+        {
+            return View();
+        }
 
-        public async Task< IActionResult> Login(LoginUser loginUser)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task< IActionResult> Login(LoginUser loginUser, string returnUrl)
         {
             if (loginUser.Email!=null && loginUser.Password!=null)
             {
@@ -154,7 +162,25 @@ namespace OnlineElection.Controllers
                         await Authenticate(loginUser.Email, p.WasVotedId); // аутентификация
 
                         TempData["Name"] = loginUser.Email;
-                        return RedirectToAction("Index", "Home");
+                        if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                        {
+
+                        //    string st = "/";
+                       
+                          var t=  returnUrl.Split('/');
+                           
+                           
+                            for(var i=0; i<t.Length;i++)
+                            {
+                              t[i]=  t[i].Replace('#', default(char));
+                            }
+                             var res=t.Reverse().Take(3);
+                            return RedirectToAction(res.ElementAt(1), res.ElementAt(2), new { id = res.ElementAt(0) });
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
 
 
                         //Dictionary<long, bool> tmp_v = new Dictionary<long, bool>();
@@ -222,6 +248,7 @@ namespace OnlineElection.Controllers
         }
 
 
+        // GET: User/Delete/5
         public ActionResult Delete(int id)
         {
             return View();

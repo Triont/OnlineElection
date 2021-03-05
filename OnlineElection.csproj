@@ -6,11 +6,13 @@
 
   <ItemGroup>
     <PackageReference Include="IronPython" Version="2.7.11" />
+    <PackageReference Include="MailKit" Version="2.10.1" />
     <PackageReference Include="Microsoft.EntityFrameWorkCore.Design" Version="5.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameWorkCore.SqlServer" Version="5.0.2" />
+    <PackageReference Include="MimeKit" Version="2.10.1" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Management" Version="5.0.0" />
   </ItemGroup>

@@ -176,3 +176,6 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Onl
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\OnlineElection.genruntimeconfig.cache
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Home\Search.cshtml.g.cs
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\libman.json
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\MailKit.dll
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\MimeKit.dll
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\BouncyCastle.Crypto.dll
