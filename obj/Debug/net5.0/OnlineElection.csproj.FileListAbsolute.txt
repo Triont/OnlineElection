@@ -180,3 +180,4 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\Mai
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\MimeKit.dll
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\BouncyCastle.Crypto.dll
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Test.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Election\EmailNotConfirmed.cshtml.g.cs
