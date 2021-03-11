@@ -179,3 +179,4 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\lib
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\MailKit.dll
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\MimeKit.dll
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Test.cshtml.g.cs

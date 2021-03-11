@@ -19,6 +19,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineElection.Controllers
 {
@@ -28,12 +29,13 @@ namespace OnlineElection.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext appDbContext;
+        private readonly EmailSendService email;
 
-
-        public User(ILogger<HomeController> logger, AppDbContext appDbContext)
+        public User(ILogger<HomeController> logger, AppDbContext appDbContext, EmailSendService email)
         {
             _logger = logger;
             this.appDbContext = appDbContext;
+            this.email = email;
         }
         public ActionResult Index()
         {
@@ -55,7 +57,7 @@ namespace OnlineElection.Controllers
         // POST: User/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateUser crUser)
+        public async Task< ActionResult> Create(CreateUser crUser)
         {
             if (ModelState.IsValid)
             {
@@ -96,10 +98,13 @@ namespace OnlineElection.Controllers
                 person.Pass = Convert.ToBase64String(temp);
                 person.Salt = Convert.ToBase64String(temparr);
 
+
                 if(appDbContext.People.Where(i=>i==person).Count()==0)
                 {
-                    appDbContext.People.Add(person);
-                    appDbContext.SaveChanges();
+                  await  appDbContext.People.AddAsync(person);
+                   await appDbContext.SaveChangesAsync();
+                    //     return RedirectToAction("ConfirmEmail", new { _person = person });
+                 await   ConfirmEmailCreate(person);
                 }
 
                 try
@@ -267,6 +272,102 @@ namespace OnlineElection.Controllers
             {
                 return View();
             }
+        }
+
+        public IActionResult Test()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail()
+        {
+            if(Request.Query.ContainsKey("token"))
+            {
+                string value = Request.Query["token"];
+          //      string value_check = value.Replace(' ', '+');
+                var ql = appDbContext.ConfirmTokens.ToList();
+                for(int i=0;i<ql.Count;i++)
+                {
+                    if (ql[i].Token==value)
+                    {
+                        TimeSpan timeSpan = new TimeSpan(0, ql[i].LifeTimeMin, 0);
+                        var qw = ql[i].CreationDateTime + timeSpan;
+                        if (DateTime.Compare(DateTime.Now, qw) <= 0)
+                        {
+                            var tmp = await appDbContext.People.FirstOrDefaultAsync(u => u.Id == ql[i].PersonId);
+                            tmp.EmailWasConfirmed = true;
+                            appDbContext.People.Update(tmp);
+                            await appDbContext.SaveChangesAsync();
+                        }
+                        return RedirectToAction("Index", "Home");
+
+                    }
+                }
+             //   var q = await appDbContext.ConfirmTokens.FirstOrDefaultAsync(i => i.Token == value);
+                //if(q!=null )
+                //{
+                //    TimeSpan timeSpan = new TimeSpan(0, q.LifeTimeMin,0);
+                //    var qw = q.CreationDateTime + timeSpan;
+                //    if(DateTime.Compare(DateTime.Now, qw)<=0)
+                //    {
+                //        var tmp = await appDbContext.People.FirstOrDefaultAsync(i => i.Id == q.PersonId);
+                //        tmp.EmailWasConfirmed = true;
+                //        appDbContext.People.Update(tmp);
+                //        await appDbContext.SaveChangesAsync();
+                //    }
+                //  //compare time
+                //  //imp
+                //  //
+
+                //}
+            }
+            return RedirectToAction("Index", "Home");
+                }
+        public async Task< IActionResult> ConfirmEmailCreate(Person _person)
+        {
+            string str = User.FindFirst(ClaimTypes.Email)?.Value;
+            if(str!=null)
+            {
+              var q=await  appDbContext.People.FirstOrDefaultAsync(i => i.Email == str);
+                //if(q.EmailWasConfirmed)
+                //{
+                    
+                //}
+
+            }
+            //  EmailSendService emailSendService = new EmailSendService();
+            //var tq=   await emailSendService.Token(user);
+            //  await EmailSendService.SendEmailAsync(user.Email, "Confirm", tq);
+            
+            string s =Request.Scheme+"://"+ Request.Host.Value;
+            var allowedString = String.Concat(s.Select(i => i)) ;
+            //var r = allowedString.Concat("/?token=");
+            //string sq=new string(r.ToArray());
+            //  var tmp_res = s + Request.Path;
+            var tmp_res = s + "/User/ConfirmEmail";
+            var ttt = tmp_res + "/?token=";
+            var qqqq =await email.Token(_person);
+
+       //   var qa=await  email.Token(new Person { FirstName = "User", Email = "aleks.borovik.98@gmail.com", Id = 1, SecondName = "Test" });
+     
+            var res = ttt + qqqq;
+           await appDbContext.ConfirmTokens.AddAsync(new ConfirmToken()
+            {
+                CreationDateTime = DateTime.Now,
+                Email=_person.Email,
+               // Email = "aleks.borovik.98@gmail.com",
+                LifeTimeMin = 10, Token=qqqq,PersonId=_person.Id
+               
+            });
+            await appDbContext.SaveChangesAsync();
+            StringBuilder stringBuilder = new StringBuilder(res);
+            stringBuilder.Replace("+", "%2B");
+            await EmailSendService.SendEmailAsync(_person.Email, "Confirm", stringBuilder.ToString());
+            //var tq=   await emailSendService.Token(user);
+            //  await EmailSendService.SendEmailAsync(user.Email, "Confirm", tq);
+            //  var allowedStringR = String.Concat(allowedString.Select(i => i));
+            return RedirectToAction("Login");
         }
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineElection.Models;
 
 namespace OnlineElection.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210307182646_init002")]
+    partial class init002
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -59,9 +61,6 @@ namespace OnlineElection.Migrations
                     b.Property<long>("PersonId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Token")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("ConfirmTokens");
@@ -101,9 +100,6 @@ namespace OnlineElection.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("EmailWasConfirmed")
-                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
                         .IsRequired()

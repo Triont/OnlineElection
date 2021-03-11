@@ -32,6 +32,7 @@ namespace OnlineElection
             services.AddControllersWithViews();
             services.AddMvc();
             services.AddTransient<HashSevice>();
+            services.AddTransient<EmailSendService>();
             
             string connection = Configuration.GetConnectionString("DefaultConnection");
             //  добавляем контекст MobileContext в качестве сервиса в приложение
@@ -55,6 +56,8 @@ namespace OnlineElection
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
+               
             }
             else
             {

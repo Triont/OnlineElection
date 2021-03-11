@@ -25,7 +25,7 @@ namespace OnlineElection.Models
         [Required]
         public string Pass { get; set; }
         public string Salt { get; set; }
-     //   public bool EmailWasConfirmed { get; set; }
+        public bool EmailWasConfirmed { get; set; }
     }
 
     public class PersonSecureData
