@@ -349,21 +349,21 @@ namespace OnlineElection.Controllers
             var ttt = tmp_res + "/?token=";
             var qqqq =await email.Token(_person);
 
-       //   var qa=await  email.Token(new Person { FirstName = "User", Email = "aleks.borovik.98@gmail.com", Id = 1, SecondName = "Test" });
-     
+    
             var res = ttt + qqqq;
            await appDbContext.ConfirmTokens.AddAsync(new ConfirmToken()
             {
                 CreationDateTime = DateTime.Now,
                 Email=_person.Email,
-               // Email = "aleks.borovik.98@gmail.com",
+          
                 LifeTimeMin = 10, Token=qqqq,PersonId=_person.Id
                
             });
             await appDbContext.SaveChangesAsync();
-            StringBuilder stringBuilder = new StringBuilder(res);
-            stringBuilder.Replace("+", "%2B");
-            await EmailSendService.SendEmailAsync(_person.Email, "Confirm", stringBuilder.ToString());
+            //StringBuilder stringBuilder = new StringBuilder(res);
+            //stringBuilder.Replace("+", "%2B");
+          var log_tmp=  await EmailSendService.SendEmailAsync(_person.Email, "Confirm", res);
+            _logger.LogInformation(log_tmp);
             //var tq=   await emailSendService.Token(user);
             //  await EmailSendService.SendEmailAsync(user.Email, "Confirm", tq);
             //  var allowedStringR = String.Concat(allowedString.Select(i => i));

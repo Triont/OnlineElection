@@ -7,20 +7,22 @@ using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
 using MimeKit;
 using OnlineElection.Models;
+using Microsoft.Extensions.Logging;
 
 namespace OnlineElection.Services
 {
-    public class EmailSendService: IUserTwoFactorTokenProvider<OnlineElection.Models.Person>
+    public class EmailSendService
     {
-        
-        public static async Task SendEmailAsync(string email, string subject, string message)
+    // private static ILogger Logger { get; set; }
+        public static async Task<string> SendEmailAsync(string email, string subject, string message)
         {
             var emailMessage = new MimeMessage();
             var build = new HtmlContentBuilder();
         //    build.AppendFormat($"<html><a href>{message ")
-            emailMessage.From.Add(new MailboxAddress("Администрация сайта", "new.test.user.newtest@gmail.com"));
+            emailMessage.From.Add(new MailboxAddress("Admin", "new.test.user.newtest@gmail.com"));
             emailMessage.To.Add(new MailboxAddress("", email));
             emailMessage.Subject = subject;
             emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
@@ -32,11 +34,28 @@ namespace OnlineElection.Services
 
             using (var client = new SmtpClient())
             {
+                string pass = String.Empty;
+                try
+                {
+                     pass = File.ReadAllText(@"C:\source\Test\mail_test.txt");
+                }
+                catch(DirectoryNotFoundException ex)
+                {
+                  //  Logger.LogCritical($"{ex.Message}, {ex.Data}, {ex.Source}");
+                    return await Task.Run(() => $"Directory not found \t {ex.Message}, {ex.Data}, {ex.Source}");
+                    
+                }
+                catch(FileNotFoundException ex)
+                {
+                  //  Logger.LogCritical($"{ex.Message}, {ex.Data}, {ex.Source}");
+                    return await Task.Run(() => $"File not found \t {ex.Message}, {ex.Data}, {ex.Source} ");
+                }
                 await client.ConnectAsync("smtp.gmail.com", 465, true);
-                await client.AuthenticateAsync("new.test.user.newtest@gmail.com", "xw6MBTfKU2Hd");
+                await client.AuthenticateAsync("new.test.user.newtest@gmail.com", pass);
                 await client.SendAsync(emailMessage);
 
                 await client.DisconnectAsync(true);
+                return await Task.Run(() => "Email was send");
             }
         }
         public async Task<string> Token(Person  user)
@@ -58,44 +77,19 @@ namespace OnlineElection.Services
 
             StringBuilder temp =new StringBuilder( Convert.ToBase64String(Guid.NewGuid().ToByteArray()));
             StringBuilder temp_q = new StringBuilder(Convert.ToBase64String(Guid.NewGuid().ToByteArray()));
-      var str1=      temp.Append(r1);
-     var str2=       str1.Append(r2);
-         var str3=   str2.Append(temp_q);
-          var str4=str3.Append(r3);
-       var str5=     str4.Append(r4);
-         //  var r= str5.Replace("+", "%2B");
+            temp.Append(r1);
+            temp.Append(r2);
+            temp.Append(temp_q);
+            temp.Append(r3);
+            temp.Append(r4);
+            temp.Replace("+", "%2B");
 
-           // string token = "ConfirmToken";
-            
-            return await Task.Run(()=>str5.ToString());
+            // string token = "ConfirmToken";
 
-        }
-
-        Task<bool> IUserTwoFactorTokenProvider<Person>.CanGenerateTwoFactorTokenAsync(UserManager<Person> manager, Person user)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<string> IUserTwoFactorTokenProvider<Person>.GenerateAsync(string purpose, UserManager<Person> manager, Person user)
-        {
-          string token=Convert.ToBase64String(  Guid.NewGuid().ToByteArray());
-
-            string str = user.FirstName;
-        var t=    System.Text.Encoding.ASCII.GetBytes(str);
-            SHA512 sHA512 = SHA512.Create();
-            for (int i = 0; i < 10000; i++)
-            {
-                t=sHA512.ComputeHash(t);
-            }
-
-            
-            return Task.Run(() => str);
+            return await Task.Run(()=>temp.ToString());
 
         }
 
-       async Task<bool> IUserTwoFactorTokenProvider<Person>.ValidateAsync(string purpose, string token, UserManager<Person> manager, Person user)
-        {
-            throw new NotImplementedException();
-        }
+ 
     }
 }

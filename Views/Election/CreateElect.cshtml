@@ -7,15 +7,11 @@
 }
 @model CreateElect
 
-@functions
-{
-   // public int x { get; set; } = 5;
-}
-@*<input type="number" value="@x" />*@
+
 
 <form asp-controller="Election" asp-action="Elect" method="post">
 <label asp-for=Name> Name</label>
-<input type="text" asp-for="Name" />
+ <input type="text" asp-for="Name" /><br />
 <label asp-for="CandidateFirst"> First</label>
 <input type="text" asp-for="CandidateFirst" />
 <label asp-for="CandidateSecond"> Second</label>
