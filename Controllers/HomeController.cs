@@ -59,12 +59,7 @@ namespace OnlineElection.Controllers
             return Conflict();
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> ReadPeople()
-        //{
-        //    var t = await appDbContext.People.FindAsync(id)
-        //    return Json(t);
-        //}
+     
         [HttpGet("{id}")]
         public async Task<IActionResult> Read(long id)
         {
@@ -100,40 +95,6 @@ namespace OnlineElection.Controllers
                 if (foundElect.Name != null)
                 {
 
-                    //var tmp =appDbContext.Elections.AsAsyncEnumerable()
-
-                    //await foreach (var tt in tmp)
-                    //{
-                    //    if (tt.Name.Contains(foundElect.Name))
-                    //    {
-                    //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
-
-                    //        if (!deser.ContainsKey(tt.Id))
-                    //            elections.Add(tt);
-                    //    }
-
-                    //    else if (tt.JSON_Election_Candidates.Contains(foundElect.Name))
-                    //    {
-                    //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
-
-                    //        if (!deser.ContainsKey(tt.Id))
-
-                    //            elections.Add(tt);
-                    //    }
-                    //    else if (tt.Id == long.Parse(foundElect.Name))
-                    //    {
-                    //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
-
-                    //        if (!deser.ContainsKey(tt.Id))
-
-                    //            elections.Add(tt);
-                    //    }
-
-
-
-
-
-                    //}
 
                     if (await appDbContext.Elections.FirstOrDefaultAsync(i => i.Name.Contains(foundElect.Name)) != null)
                     {
@@ -155,72 +116,6 @@ namespace OnlineElection.Controllers
                     }
                 }
 
-                //if (foundElect.Name != null)
-                //{
-
-                //    //var tmp =appDbContext.Elections.AsAsyncEnumerable()
-
-                //    //await foreach (var tt in tmp)
-                //    //{
-                //    //    if (tt.Name.Contains(foundElect.Name))
-                //    //    {
-                //    //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
-
-                //    //        if (!deser.ContainsKey(tt.Id))
-                //    //            elections.Add(tt);
-                //    //    }
-
-                //    //    else if (tt.JSON_Election_Candidates.Contains(foundElect.Name))
-                //    //    {
-                //    //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
-
-                //    //        if (!deser.ContainsKey(tt.Id))
-
-                //    //            elections.Add(tt);
-                //    //    }
-                //    //    else if (tt.Id == long.Parse(foundElect.Name))
-                //    //    {
-                //    //        var deser = (Dictionary<long, bool>)JsonSerializer.Deserialize(User.FindFirst("Voted elections")?.Value, typeof(Dictionary<long, bool>));
-
-                //    //        if (!deser.ContainsKey(tt.Id))
-
-                //    //            elections.Add(tt);
-                //    //    }
-
-
-
-
-
-                //    //}
-
-                //    if (await appDbContext.Elections.FirstOrDefaultAsync(i => i.Name.Contains(foundElect.Name)) != null)
-                //    {
-                //        var el = await appDbContext.Elections.Where(i => i.Name.Contains(foundElect.Name)).ToListAsync();
-                //        foreach (var i in el)
-                //        {
-                //            elections.Add(i);
-                //        }
-                //    }
-
-                //    else if (await appDbContext.Elections.FirstOrDefaultAsync(i => i.JSON_Election_Candidates.Contains(foundElect.Name)) != null)
-                //    {
-                //        var tq = await appDbContext.Elections.Where(i => i.JSON_Election_Candidates.Contains(foundElect.Name)).ToListAsync();
-                //        foreach (var q in tq)
-                //        {
-                //            elections.Add(q);
-                //        }
-
-                //    }
-                //    else if (long.TryParse(foundElect.Name, out test))
-                //    {
-                //        var qq = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == test);
-                //        if (qq != null)
-                //        {
-                //            elections.Add(qq);
-                //        }
-
-                //    }
-                //}
             }
                 return View(elections);
 

@@ -17,7 +17,7 @@
 }
 <div>
 <form asp-controller="User" asp-action="Create" method="post">
-@Html.AntiForgeryToken();
+@Html.AntiForgeryToken()
 <label asp-for="FirstName">First name</label>
 <input type="text" asp-for="FirstName" />
 

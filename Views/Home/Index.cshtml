@@ -15,12 +15,13 @@
     <h2>
     @Html.Label("", TempData["Name"]?.ToString())
     </h2> 
-    <a href ="/User/CreateElect/"> Create Electing</a>
+  
 
     @if(User.Identity.IsAuthenticated)
     {
           <a href ="/User/Logout/">Log Out</a>
-          <a href="/Election/Create/">Create election</a>
+          <a href ="/User/CreateElect/"> Create Electing</a>
+      
     }
 
     <form asp-controller="Home" asp-action="Search">

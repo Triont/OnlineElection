@@ -21,9 +21,9 @@ namespace OnlineElection.Controllers
     
     public class ElectionController : Controller
     {
-       // private readonly UserManager<IdentityUser> userManager;
+    
         private readonly AppDbContext appDbContext;
-        //private readonly Lazy<AppDbContext> dbContext;
+  
         public JSONService<Dictionary<string, long>> JSONService;
 
         public ElectionController(AppDbContext appDbContext)
@@ -88,12 +88,6 @@ namespace OnlineElection.Controllers
             appDbContext.Elections.Add(election);
             appDbContext.SaveChanges();
 
-            //ModelView.ElectionView election1 = new ModelView.ElectionView();
-            //for(int i=0;i<election.Count.Count;i++)
-            //{
-            //    election1._Value.Add(election.Count.Keys.ElementAt(i), false);
-            //}
-            //return View(election1);
             return RedirectToAction("Index", "Home");
 
         }
@@ -145,9 +139,7 @@ namespace OnlineElection.Controllers
             long tempId = election.Id;
             Dictionary<string, long> VotesCount = new Dictionary<string, long>();
             Election CurElect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == election.Id);
-            // Dictionary<long, bool> VotesCount = new Dictionary<long, bool>();
-            //HttpContext.User.FindFirst(ClaimTypes.Name).Value;
-            //    dbContext.Value.People.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
+        
             var qwerty = User.FindFirstValue(ClaimTypes.Email);
             
             //var tqt = appDbContext.People.Where(i => i.Email == qwerty).Select(i => i).FirstOrDefault();
@@ -205,7 +197,7 @@ namespace OnlineElection.Controllers
                string str_json= JsonSerializer.Serialize(keys);
                 tqt.WasVotedId = str_json;
                 appDbContext.People.Update(tqt);
-            //  var t = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == election.Id);
+          
 
                 VotesCount = (Dictionary<string, long>)JsonSerializer.Deserialize(CurElect.JSON_Election_Candidates, typeof(Dictionary<string, long>));
 

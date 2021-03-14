@@ -82,7 +82,7 @@ namespace OnlineElection.Services
             temp.Append(temp_q);
             temp.Append(r3);
             temp.Append(r4);
-            temp.Replace("+", "%2B");
+            temp.Replace("+", "%2B");//Url encode
 
             // string token = "ConfirmToken";
 

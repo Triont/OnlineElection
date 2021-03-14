@@ -209,8 +209,7 @@ namespace OnlineElection.Controllers
         private async Task Authenticate(string userName, string d)
         {
 
-            //  var tmp=(Dictionary<long, bool>) System.Text.Json.JsonSerializer.Deserialize(d, typeof(Dictionary<long, bool>));
-            // создаем один claim
+         
             List<Claim> claims;
             if (d != null)
             {
@@ -234,9 +233,9 @@ namespace OnlineElection.Controllers
 
             };
             }
-            // создаем объект ClaimsIdentity
+            // created object ClaimsIdentity
             ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            // установка аутентификационных куки
+            // set authentication cookies
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
 
@@ -304,23 +303,7 @@ namespace OnlineElection.Controllers
 
                     }
                 }
-             //   var q = await appDbContext.ConfirmTokens.FirstOrDefaultAsync(i => i.Token == value);
-                //if(q!=null )
-                //{
-                //    TimeSpan timeSpan = new TimeSpan(0, q.LifeTimeMin,0);
-                //    var qw = q.CreationDateTime + timeSpan;
-                //    if(DateTime.Compare(DateTime.Now, qw)<=0)
-                //    {
-                //        var tmp = await appDbContext.People.FirstOrDefaultAsync(i => i.Id == q.PersonId);
-                //        tmp.EmailWasConfirmed = true;
-                //        appDbContext.People.Update(tmp);
-                //        await appDbContext.SaveChangesAsync();
-                //    }
-                //  //compare time
-                //  //imp
-                //  //
-
-                //}
+       
             }
             return RedirectToAction("Index", "Home");
                 }
@@ -330,21 +313,14 @@ namespace OnlineElection.Controllers
             if(str!=null)
             {
               var q=await  appDbContext.People.FirstOrDefaultAsync(i => i.Email == str);
-                //if(q.EmailWasConfirmed)
-                //{
-                    
-                //}
+         
 
             }
-            //  EmailSendService emailSendService = new EmailSendService();
-            //var tq=   await emailSendService.Token(user);
-            //  await EmailSendService.SendEmailAsync(user.Email, "Confirm", tq);
+        
             
             string s =Request.Scheme+"://"+ Request.Host.Value;
             var allowedString = String.Concat(s.Select(i => i)) ;
-            //var r = allowedString.Concat("/?token=");
-            //string sq=new string(r.ToArray());
-            //  var tmp_res = s + Request.Path;
+        
             var tmp_res = s + "/User/ConfirmEmail";
             var ttt = tmp_res + "/?token=";
             var qqqq =await email.Token(_person);
@@ -360,13 +336,10 @@ namespace OnlineElection.Controllers
                
             });
             await appDbContext.SaveChangesAsync();
-            //StringBuilder stringBuilder = new StringBuilder(res);
-            //stringBuilder.Replace("+", "%2B");
+      
           var log_tmp=  await EmailSendService.SendEmailAsync(_person.Email, "Confirm", res);
             _logger.LogInformation(log_tmp);
-            //var tq=   await emailSendService.Token(user);
-            //  await EmailSendService.SendEmailAsync(user.Email, "Confirm", tq);
-            //  var allowedStringR = String.Concat(allowedString.Select(i => i));
+        
             return RedirectToAction("Login");
         }
     }
