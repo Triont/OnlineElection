@@ -316,28 +316,35 @@ namespace OnlineElection.Controllers
          
 
             }
+
+            //more fast
+            StringBuilder path = new StringBuilder(Request.Scheme);
+            path.Append("://");
+            path.Append(Request.Host.Value);
+            path.Append("/User/ConfirmEmail");
+            path.Append("/?token=");
+
+          //  string s =Request.Scheme+"://"+ Request.Host.Value;
+          ////  var allowedString = String.Concat(s.Select(i => i)) ;
         
-            
-            string s =Request.Scheme+"://"+ Request.Host.Value;
-            var allowedString = String.Concat(s.Select(i => i)) ;
-        
-            var tmp_res = s + "/User/ConfirmEmail";
-            var ttt = tmp_res + "/?token=";
-            var qqqq =await email.Token(_person);
+          //  var tmp_res = s + "/User/ConfirmEmail";
+          //  var ttt = tmp_res + "/?token=";
+            var token =await email.Token(_person);
+            path.Append(token);
 
     
-            var res = ttt + qqqq;
+          
            await appDbContext.ConfirmTokens.AddAsync(new ConfirmToken()
             {
                 CreationDateTime = DateTime.Now,
                 Email=_person.Email,
           
-                LifeTimeMin = 10, Token=qqqq,PersonId=_person.Id
+                LifeTimeMin = 10, Token=token,PersonId=_person.Id
                
             });
             await appDbContext.SaveChangesAsync();
       
-          var log_tmp=  await EmailSendService.SendEmailAsync(_person.Email, "Confirm", res);
+          var log_tmp=  await EmailSendService.SendEmailAsync(_person.Email, "Confirm", path.ToString());
             _logger.LogInformation(log_tmp);
         
             return RedirectToAction("Login");
