@@ -42,6 +42,7 @@
       <th scope="col">Id</th>
       <th scope="col">Name</th>
        <th scope="col">Vote</th>
+        <th scope="col">Result</th>
   
     </tr>
   </thead>
@@ -54,12 +55,28 @@
                    <td> @i.Id</td>
                    <td>@i.Name</td>
                  
-                      
+                      @if(@i.Status=="Archived")
+                      {
+                         <td>
+                         
+                        Archived
+                          
+                       </td>   
+                      }
+                      else
+                      {
                        <td>
                            <a href="/Election/Show/@i.Id">
                         
                            Vote!</a>
                        </td>
+                            }
+
+                            <td>
+                               <a href="/Election/Result/@i.Id">
+                                 Result
+                                </a>
+                            </td>
                     
                 
                </tr>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -55,5 +56,8 @@ namespace OnlineElection.Models
         public string JSON_Election_Candidates { get; set; }
         public long Count { get; set; }
         public string Result { get; set; }
+
+        public DateTime DateTimeEnd { get; set; }
+        public string Status { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace OnlineElection.ModelView
     public class ElectionView
     {
         public long Id { get; set; }
+        public string Status { get; set; }
         public List<string> CandidatesElect { get; set; } = new List<string>();
         public string Selected { get; set; }
     }

@@ -8,6 +8,7 @@
 
 
 <form asp-controller="User" asp-action="Login" asp-route-returnurl="@returnUrl" asp-action="post">
+<div asp-validation-summary=All></div>
 <label asp-for="Email">
     Your email
 

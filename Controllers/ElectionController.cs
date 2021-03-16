@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Globalization;
 
 namespace OnlineElection.Controllers
 {
@@ -52,7 +53,7 @@ namespace OnlineElection.Controllers
             }
         }
 
-        public IActionResult Elect(CreateElect createElect)
+        public async Task<IActionResult> Elect(CreateElect createElect)
         {
 
             Models.Election election = new Models.Election
@@ -85,8 +86,13 @@ namespace OnlineElection.Controllers
             }
             var json_tmp = JsonSerializer.Serialize(voices);
             election.JSON_Election_Candidates += json_tmp;
-            appDbContext.Elections.Add(election);
-            appDbContext.SaveChanges();
+            election.Status = "Actual";
+            var Now = DateTime.Now;
+          var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
+            var dateTime = Now.AddHours(hoursDuration.TotalHours);
+            election.DateTimeEnd = dateTime;
+          await  appDbContext.Elections.AddAsync(election);
+           await appDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
 
@@ -103,22 +109,30 @@ namespace OnlineElection.Controllers
             {
 
 
-
-
-                var tmp = appDbContext.Elections.Where(i => i.Id == id).Select(i => i).FirstOrDefault();
-                Dictionary<string, long> t = (Dictionary<string, long>)JsonSerializer.Deserialize(tmp.JSON_Election_Candidates,
-                    typeof(Dictionary<string, long>));
-                //  List<Candidate> candidates = new List<Candidate>();
-                List<string> candidates = new List<string>();
-                ViewData["ElectName"] = tmp.Name;
-                for (int i = 0; i < t.Count; i++)
+                var _tmp =await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
+                if (_tmp != null)
                 {
-                    candidates.Add(t.Keys.ElementAt(i));
+                    //var tmp = appDbContext.Elections.Where(i => i.Id == id).Select(i => i).FirstOrDefault();
+                    Dictionary<string, long> t = (Dictionary<string, long>)JsonSerializer.Deserialize(_tmp.JSON_Election_Candidates,
+                        typeof(Dictionary<string, long>));
+                    //  List<Candidate> candidates = new List<Candidate>();
+                    List<string> candidates = new List<string>();
+                    ViewData["ElectName"] = _tmp.Name;
+                    for (int i = 0; i < t.Count; i++)
+                    {
+                        candidates.Add(t.Keys.ElementAt(i));
+                    }
+                    ElectionView electionView = new ElectionView();
+                    electionView.CandidatesElect = candidates;
+                    electionView.Id = id;
+                    electionView.Status = _tmp.Status;
+                    return View(electionView);
                 }
-                ElectionView electionView = new ElectionView();
-                electionView.CandidatesElect = candidates;
-                electionView.Id = id;
-                return View(electionView);
+               
+
+                    Response.StatusCode = 404;
+                return View($"~/Views/Shared/Error/{Response.StatusCode}.cshtml");
+
             }
             else
             {
@@ -229,11 +243,11 @@ namespace OnlineElection.Controllers
         // appDbContext.SaveChanges();
 
             var winner_votes = VotesCount.Values.OrderByDescending(i => i).Select(k=>k);
-            var rfs = VotesCount.OrderByDescending(i => i.Value).Select(i => i.Key);
-            var winner = rfs.FirstOrDefault();
+            var Name_Ien = VotesCount.OrderByDescending(i => i.Value).Select(i => i.Key);
+            var winner = Name_Ien.FirstOrDefault();
 
             var votes_list = winner_votes.ToList();
-            var name_list = rfs.ToList();
+            var name_list = Name_Ien.ToList();
             long sum = 0;
             for(int i=0;i<votes_list.Count;i++)
             {
@@ -311,7 +325,7 @@ namespace OnlineElection.Controllers
             {
 
 
-
+                //or create Result table 
 
             //    var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
                 Dictionary<string, long> deserial = JsonSerializer.Deserialize(elect.JSON_Election_Candidates,
@@ -325,11 +339,11 @@ namespace OnlineElection.Controllers
                 //appDbContext.SaveChanges();
 
                 var winner_votes = deserial.Values.OrderByDescending(i => i).Select(k => k);
-                var rfs = deserial.OrderByDescending(i => i.Value).Select(i => i.Key);
-                var winner = rfs.FirstOrDefault();
+                var nameQueue = deserial.OrderByDescending(i => i.Value).Select(i => i.Key);
+                var winner = nameQueue.FirstOrDefault();
 
                 var votes_list = winner_votes.ToList();
-                var name_list = rfs.ToList();
+                var name_list = nameQueue.ToList();
                 long sum = 0;
                 for (int i = 0; i < votes_list.Count; i++)
                 {
