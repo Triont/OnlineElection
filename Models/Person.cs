@@ -9,11 +9,12 @@ namespace OnlineElection.Models
     {
         public long Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Not correct")]
+        
         public string FirstName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Not correct")]
         public string SecondName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Not correct")]
         public string ThirdName { get; set; }
         [Required]
         public DateTime _DateTime { get; set; }
