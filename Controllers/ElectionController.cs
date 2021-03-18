@@ -88,9 +88,14 @@ namespace OnlineElection.Controllers
             election.JSON_Election_Candidates += json_tmp;
             election.Status = "Actual";
             var Now = DateTime.Now;
-          var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
-            var dateTime = Now.AddHours(hoursDuration.TotalHours);
-            election.DateTimeEnd = dateTime;
+
+            DateTime dateTime1 = DateTime.Now;
+            double hours;
+            Double.TryParse(createElect.Duration, out hours);
+            dateTime1.AddHours(hours);
+          //var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
+          //  var dateTime = Now.AddHours(hoursDuration.TotalHours);
+            election.DateTimeEnd = dateTime1;
           await  appDbContext.Elections.AddAsync(election);
            await appDbContext.SaveChangesAsync();
 

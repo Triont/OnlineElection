@@ -109,7 +109,7 @@ namespace OnlineElection.Controllers
 
                 try
                 {
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Home");
                 }
                 catch
                 {
@@ -330,7 +330,9 @@ namespace OnlineElection.Controllers
           //  var tmp_res = s + "/User/ConfirmEmail";
           //  var ttt = tmp_res + "/?token=";
             var token =await email.Token(_person);
-            path.Append(token);
+            StringBuilder stringBuilder = new StringBuilder(token);
+            stringBuilder.Replace("+", "%2B");
+            path.Append(stringBuilder.ToString());
 
     
          
