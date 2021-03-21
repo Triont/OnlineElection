@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineElection.Models;
 using System.Threading.Tasks;
 using OnlineElection.Services;
+using Microsoft.Extensions.Logging;
 
 namespace OnlineElection
 {
@@ -33,11 +34,15 @@ namespace OnlineElection
             services.AddMvc();
             services.AddTransient<HashSevice>();
             services.AddTransient<EmailSendService>();
-            
+            services.AddSingleton<IHostedService, ServiceT>();
+            var serviceProvider = services.BuildServiceProvider();
+            var logger = serviceProvider.GetService<ILogger<ServiceT>>();
+            services.AddSingleton(typeof(ILogger), logger);
+
             string connection = Configuration.GetConnectionString("DefaultConnection");
             //  добавляем контекст MobileContext в качестве сервиса в приложение
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(connection));
+                options.UseSqlServer(connection), ServiceLifetime.Transient);
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(opt =>
 

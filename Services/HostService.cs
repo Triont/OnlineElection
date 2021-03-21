@@ -25,17 +25,18 @@ namespace OnlineElection.Services
     {
 
   
-        private readonly ILogger _log;
+        private readonly ILogger<ServiceT> _log;
         private Timer _timer;
         private readonly IServiceScopeFactory serviceScopeFactory;
         //    private readonly AppData appData;
        // private readonly AppDbContext appDbContext;
-        public ServiceT( IServiceScopeFactory serviceScopeFactory, ILogger log, AppDbContext appDbContext)
+        public ServiceT( IServiceScopeFactory serviceScopeFactory, ILogger<ServiceT> logger)
         {
-    
+
+            _log = logger;
             //  this.appData = appData;
             this.serviceScopeFactory = serviceScopeFactory;
-            this._log = log;
+       //     this._log = log;
          //   this.appDbContext = appDbContext;
         }
         //public void DoWork()
@@ -84,10 +85,12 @@ namespace OnlineElection.Services
                 //    Name = "Test"
                 //};
                 //dbcontext.Items.Add(item);
+                List<Election> elections = new List<Election>();
 
-                await dbcontext.Elections.ForEachAsync((async i =>
+
+                await dbcontext.Elections.ForEachAsync(( i =>
                 {
-                    await Task.Run(async() =>
+                     Task.Run(() =>
                     {
                         if(DateTime.Now.CompareTo(i.DateTimeEnd)>0)
                         {
@@ -96,12 +99,14 @@ namespace OnlineElection.Services
                             var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
                             var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
                             var winner = Ien_names.FirstOrDefault();
-                            i.Status = "Archived";
-                            i.Result = $"{winner} won";
-                            dbcontext.Update(i);
-                            await dbcontext.SaveChangesAsync();
+                           i.Status = "Archived";
+                           i.Result = $"{winner} won";
+                            elections.Add(i);
+                      //      dbcontext.Update(i);
+                        //     dbcontext.SaveChangesAsync();
                         }
                     });
+                 
 
 
                     #region codefromTestRazor
@@ -140,9 +145,15 @@ namespace OnlineElection.Services
                     //});
                     #endregion
                 }));
+
+                foreach (var i in elections)
+                {
+                    dbcontext.Elections.Update(i);
+                    await dbcontext.SaveChangesAsync();
+                }
                 //     dbcontext.Items.Remove(t);
                 //   dbcontext.Items.Update(t);
-                await dbcontext.SaveChangesAsync();
+                //await dbcontext.SaveChangesAsync();
                 _log.LogInformation("Deleted");
                 //    }
                 //}
