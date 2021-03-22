@@ -92,7 +92,7 @@ namespace OnlineElection.Controllers
             DateTime dateTime1 = DateTime.Now;
             double hours;
             Double.TryParse(createElect.Duration, out hours);
-            dateTime1.AddHours(hours);
+         var datetimeEnd=   dateTime1.AddSeconds(hours);
           //var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
           //  var dateTime = Now.AddHours(hoursDuration.TotalHours);
             election.DateTimeEnd = dateTime1;
