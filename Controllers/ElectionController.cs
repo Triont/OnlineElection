@@ -96,7 +96,7 @@ namespace OnlineElection.Controllers
          var datetimeEnd=   dateTime1.AddSeconds(hours);
           //var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
           //  var dateTime = Now.AddHours(hoursDuration.TotalHours);
-            election.DateTimeEnd = dateTime1;
+            election.DateTimeEnd = datetimeEnd;
           await  appDbContext.Elections.AddAsync(election);
            await appDbContext.SaveChangesAsync();
             //    await  Task.(int.Parse(createElect.Duration));
