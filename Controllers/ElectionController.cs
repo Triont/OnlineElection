@@ -92,15 +92,17 @@ namespace OnlineElection.Controllers
 
             DateTime dateTime1 = DateTime.Now;
             double hours;
-            Double.TryParse(createElect.Duration, out hours);
-         var datetimeEnd=   dateTime1.AddSeconds(hours);
+            double minutes;
+            Double.TryParse(createElect.DurationHours, out hours);
+            Double.TryParse(createElect.DurationMinutes, out minutes);
+            var datetimeEnd = dateTime1.AddHours(hours).AddMinutes(minutes);
           //var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
           //  var dateTime = Now.AddHours(hoursDuration.TotalHours);
             election.DateTimeEnd = datetimeEnd;
           await  appDbContext.Elections.AddAsync(election);
            await appDbContext.SaveChangesAsync();
             //    await  Task.(int.Parse(createElect.Duration));
-            Thread.Sleep(int.Parse(createElect.Duration));
+         //   Thread.Sleep(int.Parse(createElect.Duration));
             
          //   election.Status = "Archived";
            // appDbContext.Update(election);
