@@ -59,113 +59,116 @@ namespace OnlineElection.Services
             //appData.Items.AsParallel().ForAll((i) => { timers.Add(i)})
 
           
-                using (var scope = serviceScopeFactory.CreateScope())
-                {
-                    var dbcontext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-                    //for (int i = 0; i < testS.Id.Count; i++)
-                    //{
+            //    using (var scope = serviceScopeFactory.CreateScope())
+            //    {
+            //        var dbcontext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            //        //for (int i = 0; i < testS.Id.Count; i++)
+            //        //{
 
-                    //    var t = await dbcontext.Items.FirstOrDefaultAsync(o => o.Id == testS.Id[i]);
-                    //    if (t?.DateTimeEnd.CompareTo(DateTime.Now)>0)
-                    //    {
-                    //Item item = new Item()
-                    //{
-                    //    UserCreatedId = 999,
-                    //    BeginPrice = 29,
-                    //    Name = "Test"
-                    //};
-                    //dbcontext.Items.Add(item);
-                    var qqqqq = dbcontext.Elections.AsNoTracking();
+            //        //    var t = await dbcontext.Items.FirstOrDefaultAsync(o => o.Id == testS.Id[i]);
+            //        //    if (t?.DateTimeEnd.CompareTo(DateTime.Now)>0)
+            //        //    {
+            //        //Item item = new Item()
+            //        //{
+            //        //    UserCreatedId = 999,
+            //        //    BeginPrice = 29,
+            //        //    Name = "Test"
+            //        //};
+            //        //dbcontext.Items.Add(item);
+            //        var qqqqq = dbcontext.Elections.AsNoTracking();
 
-                    List<Election> elections = new List<Election>();
-                while (true)
-                {
+            //        List<Election> elections = new List<Election>();
+            //    while (true)
+            //    {
 
-                    await qqqqq.ForEachAsync((async i =>
-                    {
-                        await Task.Run(() =>
-                        {
-                            if (DateTime.Now.CompareTo(i.DateTimeEnd) > 0)
-                            {
-                                var s = i.JSON_Election_Candidates;
-                                var deser = JsonSerializer.Deserialize<Dictionary<string, long>>(s);
-                                var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
-                                var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
-                                var winner = Ien_names.FirstOrDefault();
-                                i.Status = "Archived";
-                                i.Result = $"{winner} won";
-                                //  elections.Add(i);
-                                //      dbcontext.Update(i);
-                                //     dbcontext.SaveChangesAsync();
-                            }
-                        });
+            //        await qqqqq.ForEachAsync((async i =>
+            //        {
+            //            await Task.Run(async() =>
+            //            {
+            //                if (DateTime.Now.CompareTo(i.DateTimeEnd) > 0)
+            //                {
+            //                    var s = i.JSON_Election_Candidates;
+            //                    var deser = JsonSerializer.Deserialize<Dictionary<string, long>>(s);
+            //                    var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
+            //                    var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
+            //                    var winner = Ien_names.FirstOrDefault();
+            //                    i.Status = "Archived";
+            //                    i.Result = $"{winner} won";
 
-
-
-                        #region codefromTestRazor
-                        //await Task.Run(async () =>
-                        //{
-                        //    if (DateTime.Now.CompareTo(i.DateTimeEnd) >= 0)
-                        //    {
-                        //        i.Status = "Expired";
-                        //        if (i.BetWasDone && !i.ItemWasRedempt)
-                        //        {
-                        //            var buyer = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
-                        //            var seller = await dbcontext.Users.FirstOrDefaultAsync
-                        //            (q =>
-                        //                JSONConvert<List<long>>.
-                        //               GetIdListFromJSONString(q.ItemsList).Contains(i.Id)
-
-                        //           );
-                        //            if (seller != null)
-                        //            {
-                        //                await EmailSendService.SendEmailAsync(seller.EmailAddress, "WebAuction", $"Your item {i.Id} was ordered by {i.LastBetUserId}. Contact with " +
-                        //                    $"him to detail order, email {buyer.EmailAddress}" +
-                        //                    $"phone number {buyer.PhoneNumber}");
-                        //            }
+            //                    dbcontext.Elections.Update(i);
+            //                    await dbcontext.SaveChangesAsync();
+            //                    //  elections.Add(i);
+            //                    //      dbcontext.Update(i);
+            //                    //     dbcontext.SaveChangesAsync();
+            //                }
+            //            });
 
 
-                        //            //var q=await dbcontext.Users.FirstOrDefaultAsync(i=>i.)
-                        //            //EmailSendService.SendEmailAsync()
 
-                        //            //  var u = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
+            //            #region codefromTestRazor
+            //            //await Task.Run(async () =>
+            //            //{
+            //            //    if (DateTime.Now.CompareTo(i.DateTimeEnd) >= 0)
+            //            //    {
+            //            //        i.Status = "Expired";
+            //            //        if (i.BetWasDone && !i.ItemWasRedempt)
+            //            //        {
+            //            //            var buyer = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
+            //            //            var seller = await dbcontext.Users.FirstOrDefaultAsync
+            //            //            (q =>
+            //            //                JSONConvert<List<long>>.
+            //            //               GetIdListFromJSONString(q.ItemsList).Contains(i.Id)
 
-                        //            //sonSerializer.Serialize()
-                        //        }
-                        //        //   dbcontext.Items.Update(i);
-                        //        //         await    dbcontext.SaveChangesAsync();
-                        //    }
-                        //});
-                        #endregion
-                    }));
+            //            //           );
+            //            //            if (seller != null)
+            //            //            {
+            //            //                await EmailSendService.SendEmailAsync(seller.EmailAddress, "WebAuction", $"Your item {i.Id} was ordered by {i.LastBetUserId}. Contact with " +
+            //            //                    $"him to detail order, email {buyer.EmailAddress}" +
+            //            //                    $"phone number {buyer.PhoneNumber}");
+            //            //            }
 
 
-                    await Task.Run(async () =>
-                     await Task.Run(() => {
-                         foreach (var i in qqqqq)
-                         {
-                             dbcontext.Elections.Update(i);
-                        //   await dbcontext.SaveChangesAsync();
-                    }
-                     }));
-                    await dbcontext.SaveChangesAsync();
-                    //     dbcontext.Items.Remove(t);
-                    //   dbcontext.Items.Update(t);
-                    //await dbcontext.SaveChangesAsync();
-                    _log.LogInformation("Update from background service ");
-                    var t = dbcontext.Elections.ToList();
-                    //foreach (var i in t)
-                    //{
-                    //    _log.LogInformation($"{i.Status}");
-                    //}
-                    ////    }
-                    ////}
-                    //_log.LogInformation("Timed Background Service is working.");
-                }
+            //            //            //var q=await dbcontext.Users.FirstOrDefaultAsync(i=>i.)
+            //            //            //EmailSendService.SendEmailAsync()
+
+            //            //            //  var u = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
+
+            //            //            //sonSerializer.Serialize()
+            //            //        }
+            //            //        //   dbcontext.Items.Update(i);
+            //            //        //         await    dbcontext.SaveChangesAsync();
+            //            //    }
+            //            //});
+            //            #endregion
+            //        }));
+
+
+            //        await Task.Run(async () =>
+            //         await Task.Run(() => {
+            //             foreach (var i in qqqqq)
+            //             {
+            //                 dbcontext.Elections.Update(i);
+            //            //   await dbcontext.SaveChangesAsync();
+            //        }
+            //         }));
+            //        await dbcontext.SaveChangesAsync();
+            //        //     dbcontext.Items.Remove(t);
+            //        //   dbcontext.Items.Update(t);
+            //        //await dbcontext.SaveChangesAsync();
+            //        _log.LogInformation("Update from background service ");
+            //        var t = dbcontext.Elections.ToList();
+            //        //foreach (var i in t)
+            //        //{
+            //        //    _log.LogInformation($"{i.Status}");
+            //        //}
+            //        ////    }
+            //        ////}
+            //        //_log.LogInformation("Timed Background Service is working.");
+            //    }
               
-                   await Task.Delay(5);
-            }
-         //   _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
+            //       await Task.Delay(5);
+            //}
+           _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(1));
          //   return Task.CompletedTask;
         }
 
@@ -177,108 +180,115 @@ namespace OnlineElection.Services
         }
         private async void DoWork(object state)
         {
-            //using (var scope = serviceScopeFactory.CreateScope())
-            //{
-            //    var dbcontext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-            //    //for (int i = 0; i < testS.Id.Count; i++)
-            //    //{
+            using (var scope = serviceScopeFactory.CreateScope())
+            {
+                var dbcontext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                //for (int i = 0; i < testS.Id.Count; i++)
+                //{
 
-            //    //    var t = await dbcontext.Items.FirstOrDefaultAsync(o => o.Id == testS.Id[i]);
-            //    //    if (t?.DateTimeEnd.CompareTo(DateTime.Now)>0)
-            //    //    {
-            //    //Item item = new Item()
-            //    //{
-            //    //    UserCreatedId = 999,
-            //    //    BeginPrice = 29,
-            //    //    Name = "Test"
-            //    //};
-            //    //dbcontext.Items.Add(item);
-            //    var qqqqq = dbcontext.Elections.AsNoTracking();
-              
-            //    List<Election> elections = new List<Election>();
+                //    var t = await dbcontext.Items.FirstOrDefaultAsync(o => o.Id == testS.Id[i]);
+                //    if (t?.DateTimeEnd.CompareTo(DateTime.Now)>0)
+                //    {
+                //Item item = new Item()
+                //{
+                //    UserCreatedId = 999,
+                //    BeginPrice = 29,
+                //    Name = "Test"
+                //};
+                //dbcontext.Items.Add(item);
+                var qqqqq = dbcontext.Elections.AsNoTracking();
+                var test_qq = dbcontext.Elections.ToList();
+                var temp = dbcontext.Elections.ToListAsync();
+                foreach(var rrr in await temp)
+                {
+                   //try it
+                }
 
-
-            //    await qqqqq.ForEachAsync((async i =>
-            //    {
-            //       await  Task.Run(() =>
-            //        {
-            //            if(DateTime.Now.CompareTo(i.DateTimeEnd)>0)
-            //            {
-            //                var s = i.JSON_Election_Candidates;
-            //               var deser= JsonSerializer.Deserialize<Dictionary<string, long>>(s);
-            //                var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
-            //                var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
-            //                var winner = Ien_names.FirstOrDefault();
-            //               i.Status = "Archived";
-            //               i.Result = $"{winner} won";
-            //              //  elections.Add(i);
-            //          //      dbcontext.Update(i);
-            //            //     dbcontext.SaveChangesAsync();
-            //            }
-            //        });
-                 
-
-
-            //        #region codefromTestRazor
-            //        //await Task.Run(async () =>
-            //        //{
-            //        //    if (DateTime.Now.CompareTo(i.DateTimeEnd) >= 0)
-            //        //    {
-            //        //        i.Status = "Expired";
-            //        //        if (i.BetWasDone && !i.ItemWasRedempt)
-            //        //        {
-            //        //            var buyer = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
-            //        //            var seller = await dbcontext.Users.FirstOrDefaultAsync
-            //        //            (q =>
-            //        //                JSONConvert<List<long>>.
-            //        //               GetIdListFromJSONString(q.ItemsList).Contains(i.Id)
-
-            //        //           );
-            //        //            if (seller != null)
-            //        //            {
-            //        //                await EmailSendService.SendEmailAsync(seller.EmailAddress, "WebAuction", $"Your item {i.Id} was ordered by {i.LastBetUserId}. Contact with " +
-            //        //                    $"him to detail order, email {buyer.EmailAddress}" +
-            //        //                    $"phone number {buyer.PhoneNumber}");
-            //        //            }
-
-
-            //        //            //var q=await dbcontext.Users.FirstOrDefaultAsync(i=>i.)
-            //        //            //EmailSendService.SendEmailAsync()
-
-            //        //            //  var u = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
-
-            //        //            //sonSerializer.Serialize()
-            //        //        }
-            //        //        //   dbcontext.Items.Update(i);
-            //        //        //         await    dbcontext.SaveChangesAsync();
-            //        //    }
-            //        //});
-            //        #endregion
-            //    }));
+                List<Election> elections = new List<Election>();
                
-                
-            //  await  Task.Run(async() =>
-            //    await Task.Run(()=>{
-            //        foreach (var i in qqqqq)
-            //        {
-            //            dbcontext.Elections.Update(i);
-            //            //   await dbcontext.SaveChangesAsync();
-            //        }
-            //    }));
-            //    await dbcontext.SaveChangesAsync();
-            //    //     dbcontext.Items.Remove(t);
-            //    //   dbcontext.Items.Update(t);
-            //    //await dbcontext.SaveChangesAsync();
-            //    _log.LogInformation("Update from background service ");
-            //    var t = dbcontext.Elections.ToList();
-            //    foreach (var i in t)
-            //    {
-            //        _log.LogInformation($"{i.Status}");
-            //    }
-            //    //    }
-            //    //}
-            //    _log.LogInformation("Timed Background Service is working.");
-            //}
+
+                 test_qq.ForEach(( i =>
+                {
+                     Task.Run(async() =>
+                    {
+                        if (DateTime.Now.CompareTo(i.DateTimeEnd) > 0)
+                        {
+                            var s = i.JSON_Election_Candidates;
+                            var deser = JsonSerializer.Deserialize<Dictionary<string, long>>(s);
+                            var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
+                            var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
+                            var winner = Ien_names.FirstOrDefault();
+                            i.Status = "Archived";
+                            i.Result = $"{winner} won";
+                             // elections.Add(i);
+                                  dbcontext.Update(i);
+                            //await    dbcontext.SaveChangesAsync();
+                        }
+                    });
+
+               //     await dbcontext.SaveChangesAsync();
+
+                    #region codefromTestRazor
+                    //await Task.Run(async () =>
+                    //{
+                    //    if (DateTime.Now.CompareTo(i.DateTimeEnd) >= 0)
+                    //    {
+                    //        i.Status = "Expired";
+                    //        if (i.BetWasDone && !i.ItemWasRedempt)
+                    //        {
+                    //            var buyer = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
+                    //            var seller = await dbcontext.Users.FirstOrDefaultAsync
+                    //            (q =>
+                    //                JSONConvert<List<long>>.
+                    //               GetIdListFromJSONString(q.ItemsList).Contains(i.Id)
+
+                    //           );
+                    //            if (seller != null)
+                    //            {
+                    //                await EmailSendService.SendEmailAsync(seller.EmailAddress, "WebAuction", $"Your item {i.Id} was ordered by {i.LastBetUserId}. Contact with " +
+                    //                    $"him to detail order, email {buyer.EmailAddress}" +
+                    //                    $"phone number {buyer.PhoneNumber}");
+                    //            }
+
+
+                    //            //var q=await dbcontext.Users.FirstOrDefaultAsync(i=>i.)
+                    //            //EmailSendService.SendEmailAsync()
+
+                    //            //  var u = await dbcontext.Users.FirstOrDefaultAsync(q => q.Id == i.LastBetUserId);
+
+                    //            //sonSerializer.Serialize()
+                    //        }
+                    //        //   dbcontext.Items.Update(i);
+                    //        //         await    dbcontext.SaveChangesAsync();
+                    //    }
+                    //});
+                    #endregion
+                }));
+
+
+                //await Task.Run(async () =>
+                // await Task.Run(() =>
+                // {
+                //     foreach (var i in qqqqq)
+                //     {
+                //         dbcontext.Elections.Update(i);
+                //        //   await dbcontext.SaveChangesAsync();
+                //    }
+                // }));
+                //await dbcontext.SaveChangesAsync();
+                //     dbcontext.Items.Remove(t);
+                //   dbcontext.Items.Update(t);
+                await dbcontext.SaveChangesAsync();
+                _log.LogInformation("Update from background service ");
+                var t = dbcontext.Elections.ToList();
+                foreach (var i in t)
+                {
+                    _log.LogInformation($"{i.Status}");
+                }
+                //    }
+                //}
+                _log.LogInformation("Timed Background Service is working.");
+            }
         }
     }
 }

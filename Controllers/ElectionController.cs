@@ -7,6 +7,7 @@ using OnlineElection.ModelView;
 using OnlineElection.Models;
 using System.Text;
 using OnlineElection.Services;
+using System.Threading;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Security.Claims;
@@ -98,6 +99,12 @@ namespace OnlineElection.Controllers
             election.DateTimeEnd = dateTime1;
           await  appDbContext.Elections.AddAsync(election);
            await appDbContext.SaveChangesAsync();
+            //    await  Task.(int.Parse(createElect.Duration));
+            Thread.Sleep(int.Parse(createElect.Duration));
+            
+         //   election.Status = "Archived";
+           // appDbContext.Update(election);
+            //await appDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
 
