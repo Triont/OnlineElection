@@ -10,6 +10,7 @@ namespace OnlineElection.Models
     {
        public DbSet<Person> People { get; set; } 
         public DbSet<Election> Elections { get; set; }
+        public DbSet<ForgotPassword> FogrotPasswords { get; set; }
 
         public DbSet<Candidate> Candidates { get; set; }
         public DbSet<ConfirmToken> ConfirmTokens { get; set; }

@@ -200,24 +200,46 @@ namespace OnlineElection.Services
                 var test_qq = dbcontext.Elections.ToList();
                 var temp = dbcontext.Elections.ToListAsync();
               var lst=  temp.Result.ToList();
-                foreach(var i in lst)
+                //mb async?
+                //await dbcontext.Elections.ForEachAsync(async i => { await Task.Run(async() => {
+                //    if (i.Status == "Actual")
+                //    {
+                //        if (DateTime.Now.CompareTo(i.DateTimeEnd) > 0)
+                //        {
+                //            var s = i.JSON_Election_Candidates;
+                //            var deser = JsonSerializer.Deserialize<Dictionary<string, long>>(s);
+                //            var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
+                //            var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
+                //            var winner = Ien_names.FirstOrDefault();
+                //            i.Status = "Archived";
+                //            i.Result = $"{winner} won";
+                //            dbcontext.Elections.Update(i);
+                //            await dbcontext.SaveChangesAsync();
+                //        }
+
+                //    }
+                //}); });
+                foreach (var i in lst)
                 {
-                  
-                        if (i.Status == "Actual")
+
+                    if (i.Status == "Actual")
+                    {
+                        if (DateTime.Now.CompareTo(i.DateTimeEnd) > 0)
                         {
-                            if (DateTime.Now.CompareTo(i.DateTimeEnd) > 0) { 
-                                var s = i.JSON_Election_Candidates;
+                            var s = i.JSON_Election_Candidates;
                             var deser = JsonSerializer.Deserialize<Dictionary<string, long>>(s);
                             var winner_votes = deser.Values.OrderByDescending(i => i).Select(k => k);
                             var Ien_names = deser.OrderByDescending(i => i.Value).Select(i => i.Key);
                             var winner = Ien_names.FirstOrDefault();
-                           i.Status = "Archived";
+                            i.Status = "Archived";
                             i.Result = $"{winner} won";
                             dbcontext.Elections.Update(i);
                         }
                     }
                 }
-               await  dbcontext.SaveChangesAsync();
+                await dbcontext.SaveChangesAsync();
+
+
                 //foreach(var rrr in await temp)
                 //{
                 //  if(DateTime.Now.CompareTo(rrr.DateTimeEnd)>=0)

@@ -206,6 +206,109 @@ namespace OnlineElection.Controllers
             return View(loginUser);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ForgotCheck()
+        {
+            if (Request.Query.ContainsKey("token"))
+            {
+                string value = Request.Query["token"];
+                //      string value_check = value.Replace(' ', '+');
+                var ql = appDbContext.FogrotPasswords.ToList();
+                for (int i = 0; i < ql.Count; i++)
+                {
+                    if (ql[i].ResetToken == value)
+                    {
+                       
+                        if (DateTime.Now.CompareTo(ql[i].DateTimeEnd) <= 0)
+                        {
+                            var tmp = await appDbContext.People.FirstOrDefaultAsync(u => u.Id == ql[i].UserId);
+                            //tmp.EmailWasConfirmed = true;
+                            //appDbContext.People.Update(tmp);
+                            //await appDbContext.SaveChangesAsync();
+                            TempData["UserId"] = ql[i].UserId;
+                            return RedirectToAction("PassNew", "User");
+                        }
+                       
+
+                    }
+                }
+
+            }
+            return RedirectToAction("Index", "Home");
+
+        }
+        public IActionResult PassNew()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> PassChange(NewPass newPass)
+        {
+            var userChangePass = await appDbContext.People.FirstOrDefaultAsync(i => i.Id == newPass.UserId);
+            if(userChangePass!=null)
+            {
+                string salt;
+                var hashedPass = HashSevice.GetHashStr(newPass.Pass, 10000, out salt);
+                userChangePass.Pass = hashedPass;
+                userChangePass.Salt = salt;
+                appDbContext.People.Update(userChangePass);
+                await appDbContext.SaveChangesAsync();
+
+
+            }
+            return RedirectToAction("Login");
+        }
+        public IActionResult Forgotten()
+        {
+            return View();
+        }
+
+        public async Task<IActionResult> Forgot(ForgottenPass forgotten)
+        {
+            var user = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == forgotten.Email);
+            if (user != null)
+            {
+               var token=await email.Token(user);
+                StringBuilder path = new StringBuilder(Request.Scheme);
+                path.Append("://");
+                path.Append(Request.Host.Value);
+                path.Append("/User/ForgotCheck");
+                path.Append("/?token=");
+
+                //  string s =Request.Scheme+"://"+ Request.Host.Value;
+                ////  var allowedString = String.Concat(s.Select(i => i)) ;
+
+                //  var tmp_res = s + "/User/ConfirmEmail";
+                //  var ttt = tmp_res + "/?token=";
+             //   var token = await email.Token(_person);
+                StringBuilder stringBuilder = new StringBuilder(token);
+                stringBuilder.Replace("+", "%2B");
+                path.Append(stringBuilder.ToString());
+
+
+
+                await appDbContext.FogrotPasswords.AddAsync(new ForgotPassword()
+                {
+
+                    DateTimeCreate = DateTime.Now,
+                    //   Email = user.Email,
+
+                    DateTimeEnd = DateTime.Now.AddMinutes(5),
+                    ResetToken = token,
+                    UserId = user.Id
+
+                }) ;
+                await appDbContext.SaveChangesAsync();
+
+                var log_tmp = await EmailSendService.SendEmailAsync(user.Email, "Reset password", path.ToString());
+                _logger.LogInformation(log_tmp);
+
+                return RedirectToAction("Login");
+            }
+            return RedirectToAction("Login");
+
+        }
+
         private async Task Authenticate(string userName, string d)
         {
 

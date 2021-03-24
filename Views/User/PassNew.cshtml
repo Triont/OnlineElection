@@ -1,0 +1,19 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using OnlineElection.ModelView
+@model NewPass
+@{
+}
+<div>
+<form asp-controller="User" asp-action="ChangePass">
+<div asp-validation-summary=All></div>
+    <label asp-for=Pass></label>
+    <input type="password" asp-for=Pass />
+    <label asp-for=ConfirmedPass></label>
+    <input type="password" asp-for=ConfirmedPass />
+    <input type="hidden" value="@TempData["UserId"]" asp-for=UserId />
+    <input type="submit" />
+</form>    
+
+</div>
