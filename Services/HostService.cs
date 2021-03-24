@@ -196,7 +196,7 @@ namespace OnlineElection.Services
                 //    Name = "Test"
                 //};
                 //dbcontext.Items.Add(item);
-                var qqqqq = dbcontext.Elections.AsNoTracking();
+             //   var qqqqq = dbcontext.Elections.AsNoTracking();
                 var test_qq = dbcontext.Elections.ToList();
                 var temp = dbcontext.Elections.ToListAsync();
               var lst=  temp.Result.ToList();

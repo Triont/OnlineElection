@@ -225,7 +225,7 @@ namespace OnlineElection.Controllers
                             //tmp.EmailWasConfirmed = true;
                             //appDbContext.People.Update(tmp);
                             //await appDbContext.SaveChangesAsync();
-                            TempData["UserId"] = ql[i].UserId;
+                            TempData["UserId"] = ql[i].UserId.ToString();
                             return RedirectToAction("PassNew", "User");
                         }
                        
@@ -244,7 +244,7 @@ namespace OnlineElection.Controllers
 
         public async Task<IActionResult> PassChange(NewPass newPass)
         {
-            var userChangePass = await appDbContext.People.FirstOrDefaultAsync(i => i.Id == newPass.UserId);
+            var userChangePass = await appDbContext.People.FirstOrDefaultAsync(i => i.Id == long.Parse( newPass.UserId));
             if(userChangePass!=null)
             {
                 string salt;

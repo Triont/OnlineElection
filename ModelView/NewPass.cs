@@ -9,7 +9,7 @@ namespace OnlineElection.ModelView
     public class NewPass
 
     {
-        public long UserId { get; set; }
+        public string UserId { get; set; }
         [Required]
         public string Pass { get; set; }
 

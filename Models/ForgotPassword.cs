@@ -7,6 +7,7 @@ namespace OnlineElection.Models
 {
     public class ForgotPassword
     {
+        public long Id { get; set; }
         public string ResetToken { get; set; }
         public DateTime DateTimeCreate { get; set; }
         public DateTime DateTimeEnd { get; set; }

@@ -181,3 +181,5 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\Mim
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\bin\Debug\net5.0\BouncyCastle.Crypto.dll
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Test.cshtml.g.cs
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Election\EmailNotConfirmed.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Forgotten.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\PassNew.cshtml.g.cs
