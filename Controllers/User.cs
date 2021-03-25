@@ -119,6 +119,13 @@ namespace OnlineElection.Controllers
             else return View();
         }
 
+        public async Task<IActionResult> Edit()
+        {
+           var email= User.FindFirst(ClaimTypes.Email)?.Value;
+            var curUser = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == email);
+            return View(curUser);
+        }
+
         // GET: User/Edit/5
         public ActionResult Edit(int id)
         {
@@ -130,6 +137,7 @@ namespace OnlineElection.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, IFormCollection collection)
         {
+            
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -307,6 +315,67 @@ namespace OnlineElection.Controllers
             }
             return RedirectToAction("Login");
 
+        }
+        [Authorize]
+        public IActionResult PasswordRetry()
+        {
+        
+            
+            return View();
+        }
+
+        public async Task<IActionResult> CheckPasssword(CheckPass checkPass)
+        {
+            var Email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var curUser = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == Email);
+            if(curUser!=null)
+            {
+              var tmp=  HashSevice.GetHashStr(checkPass.Pass, Convert.FromBase64String(curUser.Salt), 10000);
+           
+                if(tmp==curUser.Pass)
+                {
+                    return RedirectToAction("EditView");
+                }
+                else
+                {
+                    return RedirectToAction("NotCorrect");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        [Authorize]
+        public async Task<IActionResult> Edit(Person person)
+        {
+
+            var personToEdit = await appDbContext.People.FirstOrDefaultAsync(i => i.Id == person.Id);
+            if(personToEdit!=null)
+            {
+                if(personToEdit.FirstName!=person.FirstName)
+                {
+                    personToEdit.FirstName = person.FirstName;
+                }
+                if(personToEdit.SecondName!=person.SecondName)
+                {
+                    personToEdit.SecondName = person.SecondName;
+                }
+                if(personToEdit.ThirdName!=person.ThirdName)
+                {
+                    personToEdit.ThirdName = person.ThirdName;
+                }
+                if(personToEdit.Email!=person.Email)
+                {
+                    personToEdit.Email = person.Email;
+                    personToEdit.EmailWasConfirmed = false;
+                }
+                appDbContext.People.Update(personToEdit);
+                await appDbContext.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Index", "Home");
+        
         }
 
         private async Task Authenticate(string userName, string d)

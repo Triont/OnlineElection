@@ -1,0 +1,37 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using OnlineElection.Models;
+@using OnlineElection.ModelView;
+@model Person
+@{
+}
+<div>
+    <label asp-for=FirstName>@Model.FirstName</label>
+  
+    <label asp-for=SecondName>@Model.SecondName</label>
+      
+        <label asp-for="ThirdName">@Model.ThirdName</label>
+      
+              <label asp-for="Email">@Model.Email</label>
+            @if(Model.EmailWasConfirmed)
+            {
+                <p>Email was confirmed</p>
+            }
+            else
+            {
+                <p>Email was not confirmed </p>
+                <form asp-controller="User" asp-action="ConfirmEmailCreate">
+                    <input type="hidden" value="@Model" />
+                    <input type="submit" value="Confirm" />
+                </form>
+            }
+            
+          
+
+            <a href="User/PasswordRetry">Edit</a>
+
+
+
+
+</div>
