@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace OnlineElection.Controllers
 {
@@ -119,6 +120,7 @@ namespace OnlineElection.Controllers
             else return View();
         }
 
+        [HttpGet]
         public async Task<IActionResult> Edit()
         {
            var email= User.FindFirst(ClaimTypes.Email)?.Value;
@@ -126,8 +128,19 @@ namespace OnlineElection.Controllers
             return View(curUser);
         }
 
+        public IActionResult EditView()
+        {
+          string personJson = TempData["CurUser"] as string;
+            EditViewModel person = JsonSerializer.Deserialize<EditViewModel>(personJson);
+            return View(person);
+        }
+
         // GET: User/Edit/5
-        public ActionResult Edit(int id)
+        //public ActionResult Edit(int id)
+        //{
+        //    return View();
+        //}
+        public IActionResult PasswordPetry()
         {
             return View();
         }
@@ -135,7 +148,7 @@ namespace OnlineElection.Controllers
         // POST: User/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult EditById(int id, IFormCollection collection)
         {
             
             try
@@ -324,16 +337,24 @@ namespace OnlineElection.Controllers
             return View();
         }
 
-        public async Task<IActionResult> CheckPasssword(CheckPass checkPass)
+        public async Task<IActionResult> CheckPassword(CheckPass checkPass)
         {
             var Email = User.FindFirst(ClaimTypes.Email)?.Value;
             var curUser = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == Email);
+            EditViewModel editViewModel = new EditViewModel();
             if(curUser!=null)
             {
               var tmp=  HashSevice.GetHashStr(checkPass.Pass, Convert.FromBase64String(curUser.Salt), 10000);
            
                 if(tmp==curUser.Pass)
                 {
+                  //  TempData["User"]=curUser;
+                    editViewModel.Id = curUser.Id;
+                    editViewModel.FirstName = curUser.FirstName;
+                    editViewModel.SecondName = curUser.SecondName;
+                    editViewModel.ThirdName = curUser.ThirdName;
+                    editViewModel.Email = curUser.Email;
+                    TempData["CurUser"] = JsonSerializer.Serialize(editViewModel);
                     return RedirectToAction("EditView");
                 }
                 else
@@ -347,6 +368,8 @@ namespace OnlineElection.Controllers
             }
         }
         [Authorize]
+        [HttpPost]
+        
         public async Task<IActionResult> Edit(Person person)
         {
 

@@ -183,3 +183,6 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Raz
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Election\EmailNotConfirmed.cshtml.g.cs
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Forgotten.cshtml.g.cs
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\PassNew.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Edit.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\EditView.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\PasswordRetry.cshtml.g.cs
