@@ -10,5 +10,6 @@ namespace OnlineElection.ModelView
         public List<long> Votes { get; set; }
         public List<string> Names { get; set; }
         public List<double> Percents { get; set; }
+        public bool Active { get; set; }
     }
 }

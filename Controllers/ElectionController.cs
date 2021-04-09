@@ -381,6 +381,14 @@ namespace OnlineElection.Controllers
                 resultView.Names = name_list;
                 resultView.Votes = votes_list;
                 resultView.Percents = percents;
+                if(elect.Status=="Actual")
+                {
+                    resultView.Active = true;
+                }
+                else
+                {
+                    resultView.Active = false;
+                }
 
 
                 return View(resultView);

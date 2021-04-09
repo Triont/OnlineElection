@@ -19,7 +19,20 @@
 
                     @Model.Names[i] 
                     @Model.Votes[i] votes and
-                    @Model.Percents[i] %
+                    @if(@Double.IsNaN(Model.Percents[0]))
+                    {                      
+                   <text>0%</text>
+                  
+                    }
+                    else
+                    {                   
+                   <text> @Model.Percents[i] %</text>
+                  
+                    
+
+                    }
+                    
+                 
 
                     </div>
                  <br/>
@@ -27,7 +40,30 @@
        </div>
        <br/>
        <div>
-           Winner is @Model.Names[0] with @Model.Votes[0] votes and @Model.Percents[0] %
+         @if(Model.Active)
+         {
+             @if(Double.IsNaN( Model.Percents[0]))
+             {
+                  <p>   @Model.Names[0] is winning with @Model.Votes[0] and 0 % now</p>
+             }
+             else
+             {
+          <p>   @Model.Names[0] is winning with @Model.Votes[0] and @Model.Percents[0] % now</p>
+          }
+         }
+         else
+         {
+             if(Double.IsNaN(Model.Percents[0]))
+             {
+            <p>  Winner is @Model.Names[0] with @Model.Votes[0] votes and 0 %</p>
+            }
+            else
+            {
+                  <p>  Winner is @Model.Names[0] with @Model.Votes[0] votes and @Model.Percents[0]%</p>
+        
+            }
+         }
+          
        </div>
 
         
