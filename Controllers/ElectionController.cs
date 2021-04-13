@@ -15,24 +15,26 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace OnlineElection.Controllers
 {
-  
+
     [Authorize]
     
+
     public class ElectionController : Controller
     {
-    
+
         private readonly AppDbContext appDbContext;
-  
+
         public JSONService<Dictionary<string, long>> JSONService;
 
         public ElectionController(AppDbContext appDbContext)
         {
-        
+
             this.appDbContext = appDbContext;
-           // dbContext = appDb;
+            // dbContext = appDb;
         }
         public IActionResult Index()
         {
@@ -85,7 +87,7 @@ namespace OnlineElection.Controllers
 
                 voices.Add(createElect.CandidateFifth, 0);
             }
-            var json_tmp = JsonSerializer.Serialize(voices);
+            var json_tmp = System.Text.Json.JsonSerializer.Serialize(voices);
             election.JSON_Election_Candidates += json_tmp;
             election.Status = "Actual";
             var Now = DateTime.Now;
@@ -96,38 +98,48 @@ namespace OnlineElection.Controllers
             Double.TryParse(createElect.DurationHours, out hours);
             Double.TryParse(createElect.DurationMinutes, out minutes);
             var datetimeEnd = dateTime1.AddHours(hours).AddMinutes(minutes);
-          //var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
-          //  var dateTime = Now.AddHours(hoursDuration.TotalHours);
+            //var hoursDuration=  TimeSpan.ParseExact(createElect.Duration, "HH", CultureInfo.InvariantCulture);
+            //  var dateTime = Now.AddHours(hoursDuration.TotalHours);
             election.DateTimeEnd = datetimeEnd;
-          await  appDbContext.Elections.AddAsync(election);
-           await appDbContext.SaveChangesAsync();
+            await appDbContext.Elections.AddAsync(election);
+            await appDbContext.SaveChangesAsync();
             //    await  Task.(int.Parse(createElect.Duration));
-         //   Thread.Sleep(int.Parse(createElect.Duration));
-            
-         //   election.Status = "Archived";
-           // appDbContext.Update(election);
+            //   Thread.Sleep(int.Parse(createElect.Duration));
+
+            //   election.Status = "Archived";
+            // appDbContext.Update(election);
             //await appDbContext.SaveChangesAsync();
 
             return RedirectToAction("Index", "Home");
 
         }
 
-   
-        
+
+
         //[Authorize(""]
-        public async Task< IActionResult> Show(long id)
+        public async Task<IActionResult> Show(long id)
         {
             var tmp_user = User.FindFirst(ClaimTypes.Email)?.Value;
-          var user=await  appDbContext.People.FirstOrDefaultAsync(i => i.Email == tmp_user);
+            var user = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == tmp_user);
             if (user.EmailWasConfirmed)
             {
 
 
-                var _tmp =await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
+                var _tmp = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
                 if (_tmp != null)
                 {
+                    var tmp_bool = System.Text.Json.JsonSerializer.Deserialize<Dictionary<long, bool>>(user.WasVotedId);
+                    if (tmp_bool.ContainsKey(id))
+                    {
+                        if (tmp_bool[id])
+                        {
+                            TempData["AlreadyVote"] = true;
+                            return RedirectToAction("AlreadyVoted!");
+                        }
+
+                    }
                     //var tmp = appDbContext.Elections.Where(i => i.Id == id).Select(i => i).FirstOrDefault();
-                    Dictionary<string, long> t = (Dictionary<string, long>)JsonSerializer.Deserialize(_tmp.JSON_Election_Candidates,
+                    Dictionary<string, long> t = (Dictionary<string, long>)System.Text.Json.JsonSerializer.Deserialize(_tmp.JSON_Election_Candidates,
                         typeof(Dictionary<string, long>));
                     //  List<Candidate> candidates = new List<Candidate>();
                     List<string> candidates = new List<string>();
@@ -142,9 +154,9 @@ namespace OnlineElection.Controllers
                     electionView.Status = _tmp.Status;
                     return View(electionView);
                 }
-               
 
-                    Response.StatusCode = 404;
+
+                Response.StatusCode = 404;
                 return View($"~/Views/Shared/Error/{Response.StatusCode}.cshtml");
 
             }
@@ -152,51 +164,63 @@ namespace OnlineElection.Controllers
             {
                 return RedirectToAction("EmailNotConfirmed");
             }
-           // return View();
+            // return View();
 
         }
         public IActionResult EmailNotConfirmed()
         {
             return View();
         }
-        
+        public IActionResult AlreadyVoted()
+        {
+            var check = (bool)TempData["AlreadyVote"];
+            if (check)
+            {
+                return View();
+            }
+            else
+            {
+                return View("PageNotFound");
+            }
+        }
 
-        
-        public async Task< IActionResult> Result(ElectionView election)//refactored
+
+
+        public async Task<IActionResult> Result(ElectionView election)//refactored
         {
             long tempId = election.Id;
             Dictionary<string, long> VotesCount = new Dictionary<string, long>();
             Election CurElect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == election.Id);
-        
+
             var qwerty = User.FindFirstValue(ClaimTypes.Email);
-            
+
             //var tqt = appDbContext.People.Where(i => i.Email == qwerty).Select(i => i).FirstOrDefault();
-            var tqt =await appDbContext.People.FirstOrDefaultAsync(i => i.Email == qwerty);
-           if(tqt?.WasVotedId!=null)
+            var tqt = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == qwerty);
+            if (tqt?.WasVotedId != null)
             {
 
-              //  Dictionary<long, bool> keyValuePairs1 = new Dictionary<long, bool>();
-                if (JsonSerializer.Deserialize(tqt?.WasVotedId, typeof(Dictionary<long, bool>)) is Dictionary<long, bool>)
+                //  Dictionary<long, bool> keyValuePairs1 = new Dictionary<long, bool>();
+                if (System.Text.Json.JsonSerializer.Deserialize(tqt?.WasVotedId, typeof(Dictionary<long, bool>)) is Dictionary<long, bool>)
                 {
-                    Dictionary<long, bool> values = (Dictionary<long, bool>)JsonSerializer.Deserialize(tqt?.WasVotedId, typeof(Dictionary<long, bool>));
+                    Dictionary<long, bool> values = (Dictionary<long, bool>)System.Text.Json.JsonSerializer.Deserialize(tqt?.WasVotedId, typeof(Dictionary<long, bool>));
 
 
-                 
+
                     if (!values.ContainsKey(election.Id))
                     {
 
                         values.Add(election.Id, true);
-                     //   var t = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == election.Id);
+                        //   var t = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == election.Id);
 
-                       
-                        VotesCount = (Dictionary<string, long>)JsonSerializer.Deserialize(CurElect?.JSON_Election_Candidates, typeof(Dictionary<string, long>));
+
+                        VotesCount = (Dictionary<string, long>)System.Text.Json.JsonSerializer.Deserialize(CurElect?.JSON_Election_Candidates, typeof(Dictionary<string, long>));
 
                         VotesCount[election?.Selected]++;
-                        string tmp_json = JsonSerializer.Serialize(VotesCount);
+                        string tmp_json = System.Text.Json.JsonSerializer.Serialize(VotesCount);
                         CurElect.JSON_Election_Candidates = tmp_json;
 
                         appDbContext.Elections.Update(CurElect);
-                        string tmp_json_p = JsonSerializer.Serialize(values);
+                        string tmp_json_p = System.Text.Json.JsonSerializer.Serialize(values);
                         tqt.WasVotedId = tmp_json_p;
                         appDbContext.People.Update(tqt);
                         await appDbContext.SaveChangesAsync();
@@ -209,7 +233,7 @@ namespace OnlineElection.Controllers
                         return Redirect($"Show/{election.Id}");
                     }
 
-                  
+
 
 
 
@@ -222,62 +246,62 @@ namespace OnlineElection.Controllers
             {
                 Dictionary<long, bool> keys = new Dictionary<long, bool>();
                 keys.Add(election.Id, true);
-               string str_json= JsonSerializer.Serialize(keys);
+                string str_json = System.Text.Json.JsonSerializer.Serialize(keys);
                 tqt.WasVotedId = str_json;
                 appDbContext.People.Update(tqt);
-          
 
-                VotesCount = (Dictionary<string, long>)JsonSerializer.Deserialize(CurElect.JSON_Election_Candidates, typeof(Dictionary<string, long>));
+
+                VotesCount = (Dictionary<string, long>)System.Text.Json.JsonSerializer.Deserialize(CurElect.JSON_Election_Candidates, typeof(Dictionary<string, long>));
 
                 VotesCount[election?.Selected]++;
-                string tmp_json = JsonSerializer.Serialize(VotesCount);
+                string tmp_json = System.Text.Json.JsonSerializer.Serialize(VotesCount);
                 CurElect.JSON_Election_Candidates = tmp_json;
                 appDbContext.Elections.Update(CurElect);
                 await appDbContext.SaveChangesAsync();
 
             }
-       //var faf=     userManager.GetUserAsync(HttpContext.User);
-            
-       //     faf.Ema
+            //var faf=     userManager.GetUserAsync(HttpContext.User);
 
-        //    if(election.CandidatesElect.Count>1)
-        //    {
-        //        return RedirectToAction("Show");
-        //    }
-        //    string fst = election.Selected;
-      //  var tmp=    appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
-        //    Dictionary<string, long> deserial = JsonSerializer.Deserialize(tmp.JSON_Election_Candidates,
-        //        typeof(Dictionary<string, long>)) as Dictionary<string, long>;
+            //     faf.Ema
 
-        //    deserial[fst]++;
-        //    var newJSON = JsonSerializer.Serialize(deserial);
-        //    //var newJSON = JSONService.ToJSON(deserial);
-        //    tmp.JSON_Election_Candidates = newJSON;
-        //    appDbContext.Elections.Update(tmp);
-        // appDbContext.SaveChanges();
+            //    if(election.CandidatesElect.Count>1)
+            //    {
+            //        return RedirectToAction("Show");
+            //    }
+            //    string fst = election.Selected;
+            //  var tmp=    appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
+            //    Dictionary<string, long> deserial = JsonSerializer.Deserialize(tmp.JSON_Election_Candidates,
+            //        typeof(Dictionary<string, long>)) as Dictionary<string, long>;
 
-            var winner_votes = VotesCount.Values.OrderByDescending(i => i).Select(k=>k);
+            //    deserial[fst]++;
+            //    var newJSON = JsonSerializer.Serialize(deserial);
+            //    //var newJSON = JSONService.ToJSON(deserial);
+            //    tmp.JSON_Election_Candidates = newJSON;
+            //    appDbContext.Elections.Update(tmp);
+            // appDbContext.SaveChanges();
+
+            var winner_votes = VotesCount.Values.OrderByDescending(i => i).Select(k => k);
             var Name_Ien = VotesCount.OrderByDescending(i => i.Value).Select(i => i.Key);
             var winner = Name_Ien.FirstOrDefault();
 
             var votes_list = winner_votes.ToList();
             var name_list = Name_Ien.ToList();
             long sum = 0;
-            for(int i=0;i<votes_list.Count;i++)
+            for (int i = 0; i < votes_list.Count; i++)
             {
                 sum += votes_list[i];
             }
             List<double> percents = new List<double>();
-            for(int i=0;i<votes_list.Count;i++)
+            for (int i = 0; i < votes_list.Count; i++)
             {
-                double tm =( (double)votes_list[i] /(double) sum)*100.0;
-              double _tm= Math.Round(tm, 2);
+                double tm = ((double)votes_list[i] / (double)sum) * 100.0;
+                double _tm = Math.Round(tm, 2);
                 percents.Add(_tm);
             }
             Dictionary<long, bool> check_t = new Dictionary<long, bool>();
 
             check_t.Add(CurElect.Id, true);
-            var str__json = JsonSerializer.Serialize(check_t);
+            var str__json = System.Text.Json.JsonSerializer.Serialize(check_t);
             tqt.WasVotedId = str__json;
             appDbContext.People.Update(tqt);
             await appDbContext.SaveChangesAsync();
@@ -285,38 +309,40 @@ namespace OnlineElection.Controllers
             resultView.Names = name_list;
             resultView.Votes = votes_list;
             resultView.Percents = percents;
+
+            resultView.id = CurElect.Id;
             return View(resultView);
 
 
-         //   if(election._Value.Values.Where(i=>i==true).Count()>1)
-         //   {
-         //       ModelState.AddModelError("", "only one");
-         //   }
+            //   if(election._Value.Values.Where(i=>i==true).Count()>1)
+            //   {
+            //       ModelState.AddModelError("", "only one");
+            //   }
 
-         //string str=   election._Value.Where(i => i.Value == true).Select(i => i.Key).FirstOrDefault();
+            //string str=   election._Value.Where(i => i.Value == true).Select(i => i.Key).FirstOrDefault();
 
-         //   try
-         //   {
-         //       var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).FirstOrDefault();
+            //   try
+            //   {
+            //       var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).FirstOrDefault();
 
-         //       tmp.Add(str);
-         //       long tmp_c = 0;
-         //       for (int i = 0; i < tmp.Count.Count; i++)
-         //       {
-         //           tmp_c += (tmp.Count[tmp.Count.Keys.ElementAt(i)]);
-         //       }
-         //       appDbContext.Elections.Update(tmp);
-         //       appDbContext.SaveChanges();
+            //       tmp.Add(str);
+            //       long tmp_c = 0;
+            //       for (int i = 0; i < tmp.Count.Count; i++)
+            //       {
+            //           tmp_c += (tmp.Count[tmp.Count.Keys.ElementAt(i)]);
+            //       }
+            //       appDbContext.Elections.Update(tmp);
+            //       appDbContext.SaveChanges();
 
-         //       ViewData["Voters"] = tmp_c;
-         //       return View(tmp);
-         //   }
-         //   catch(NullReferenceException d)
-         //   {
-         //       return RedirectToAction("Elect", "Election");
-         //   }
+            //       ViewData["Voters"] = tmp_c;
+            //       return View(tmp);
+            //   }
+            //   catch(NullReferenceException d)
+            //   {
+            //       return RedirectToAction("Elect", "Election");
+            //   }
 
-                
+
         }
 
         //public async Task<IActionResult> ResultAsync(ElectionView electionView)
@@ -335,18 +361,18 @@ namespace OnlineElection.Controllers
         public async Task<IActionResult> Result(long id)
         {
             var elect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
-            if(elect!=null)
+            if (elect != null)
             {
 
 
                 //or create Result table 
 
-            //    var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
-                Dictionary<string, long> deserial = JsonSerializer.Deserialize(elect.JSON_Election_Candidates,
+                //    var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
+                Dictionary<string, long> deserial = System.Text.Json.JsonSerializer.Deserialize(elect.JSON_Election_Candidates,
                     typeof(Dictionary<string, long>)) as Dictionary<string, long>;
 
-            //    deserial[fst]++;
-             //   var newJSON = JsonSerializer.Serialize(deserial);
+                //    deserial[fst]++;
+                //   var newJSON = JsonSerializer.Serialize(deserial);
                 //var newJSON = JSONService.ToJSON(deserial);
                 //tmp.JSON_Election_Candidates = newJSON;
                 //appDbContext.Elections.Update(tmp);
@@ -373,7 +399,7 @@ namespace OnlineElection.Controllers
                 Dictionary<long, bool> check_t = new Dictionary<long, bool>();
 
                 check_t.Add(elect.Id, true);
-                var str__json = JsonSerializer.Serialize(check_t);
+                var str__json = System.Text.Json.JsonSerializer.Serialize(check_t);
                 //rwrf.WasVotedId = str__json;
                 //appDbContext.People.Update(rwrf);
                 //appDbContext.SaveChanges();
@@ -381,7 +407,8 @@ namespace OnlineElection.Controllers
                 resultView.Names = name_list;
                 resultView.Votes = votes_list;
                 resultView.Percents = percents;
-                if(elect.Status=="Actual")
+                resultView.id = elect.Id;
+                if (elect.Status == "Actual")
                 {
                     resultView.Active = true;
                 }
@@ -389,8 +416,23 @@ namespace OnlineElection.Controllers
                 {
                     resultView.Active = false;
                 }
+                for (int i = 0; i < resultView.Percents.Count; i++)
+                {
+                    if (resultView.Percents.Count == resultView.Votes.Count)
+                    {
+                        if (Double.IsNaN(resultView.Percents[i]) || double.IsInfinity(resultView.Percents[i]))
+                        {
+                            resultView.Percents[i] = 0;
+                        }
+                        if (Double.IsNaN(resultView.Votes[i]) || double.IsInfinity(resultView.Votes[i]))
+                        {
+                            resultView.Votes[i] = 0;
+                        }
+                    }
+                }
 
 
+                //   return Json(resultView);
                 return View(resultView);
             }
             else
@@ -398,5 +440,190 @@ namespace OnlineElection.Controllers
                 return View();
             }
         }
+
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResultJsonAjax(long id)
+        {
+            var elect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
+            if (elect != null)
+            {
+
+
+                //or create Result table 
+
+                //    var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
+                Dictionary<string, long> deserial = System.Text.Json.JsonSerializer.Deserialize(elect.JSON_Election_Candidates,
+                    typeof(Dictionary<string, long>)) as Dictionary<string, long>;
+
+                //    deserial[fst]++;
+                //   var newJSON = JsonSerializer.Serialize(deserial);
+                //var newJSON = JSONService.ToJSON(deserial);
+                //tmp.JSON_Election_Candidates = newJSON;
+                //appDbContext.Elections.Update(tmp);
+                //appDbContext.SaveChanges();
+
+                var winner_votes = deserial.Values.OrderByDescending(i => i).Select(k => k);
+                var nameQueue = deserial.OrderByDescending(i => i.Value).Select(i => i.Key);
+                var winner = nameQueue.FirstOrDefault();
+
+                var votes_list = winner_votes.ToList();
+                var name_list = nameQueue.ToList();
+                long sum = 0;
+                for (int i = 0; i < votes_list.Count; i++)
+                {
+                    sum += votes_list[i];
+                }
+                List<double> percents = new List<double>();
+                for (int i = 0; i < votes_list.Count; i++)
+                {
+                    double tm = ((double)votes_list[i] / (double)sum) * 100.0;
+                    double _tm = Math.Round(tm, 2);
+                    percents.Add(_tm);
+                }
+                Dictionary<long, bool> check_t = new Dictionary<long, bool>();
+
+                check_t.Add(elect.Id, true);
+                var str__json = System.Text.Json.JsonSerializer.Serialize(check_t);
+                //rwrf.WasVotedId = str__json;
+                //appDbContext.People.Update(rwrf);
+                //appDbContext.SaveChanges();
+                ResultView resultView = new ResultView();
+                resultView.Names = name_list;
+                resultView.Votes = votes_list;
+                resultView.Percents = percents;
+                resultView.id = elect.Id;
+                if (elect.Status == "Actual")
+                {
+                    resultView.Active = true;
+                }
+                else
+                {
+                    resultView.Active = false;
+                }
+                for (int i = 0; i < resultView.Percents.Count; i++)
+                {
+                    if (resultView.Percents.Count == resultView.Votes.Count)
+                    {
+                        if (Double.IsNaN(resultView.Percents[i]) || double.IsInfinity(resultView.Percents[i]))
+                        {
+                            resultView.Percents[i] = 0;
+                        }
+                        if (Double.IsNaN(resultView.Votes[i]) || double.IsInfinity(resultView.Votes[i]))
+                        {
+                            resultView.Votes[i] = 0;
+                        }
+                    }
+
+                }
+
+                ViewData["Id"] = resultView.id;
+                JsonView json = new JsonView() { json = JsonConvert.SerializeObject(resultView) };
+                return View(json);
+                //return View(resultView);
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResultJson([FromBody]string Id)
+        {
+            long id;
+            long.TryParse(Id,out id);
+            var elect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
+            if (elect != null)
+            {
+
+
+                //or create Result table 
+
+                //    var tmp = appDbContext.Elections.Where(i => i.Id == election.Id).Select(i => i).FirstOrDefault();
+                Dictionary<string, long> deserial = System.Text.Json.JsonSerializer.Deserialize(elect.JSON_Election_Candidates,
+                    typeof(Dictionary<string, long>)) as Dictionary<string, long>;
+
+                //    deserial[fst]++;
+                //   var newJSON = JsonSerializer.Serialize(deserial);
+                //var newJSON = JSONService.ToJSON(deserial);
+                //tmp.JSON_Election_Candidates = newJSON;
+                //appDbContext.Elections.Update(tmp);
+                //appDbContext.SaveChanges();
+
+                var winner_votes = deserial.Values.OrderByDescending(i => i).Select(k => k);
+                var nameQueue = deserial.OrderByDescending(i => i.Value).Select(i => i.Key);
+                var winner = nameQueue.FirstOrDefault();
+
+                var votes_list = winner_votes.ToList();
+                var name_list = nameQueue.ToList();
+                long sum = 0;
+                for (int i = 0; i < votes_list.Count; i++)
+                {
+                    sum += votes_list[i];
+                }
+                List<double> percents = new List<double>();
+                for (int i = 0; i < votes_list.Count; i++)
+                {
+                    double tm = ((double)votes_list[i] / (double)sum) * 100.0;
+                    double _tm = Math.Round(tm, 2);
+                    percents.Add(_tm);
+                }
+                Dictionary<long, bool> check_t = new Dictionary<long, bool>();
+
+                check_t.Add(elect.Id, true);
+                var str__json = System.Text.Json.JsonSerializer.Serialize(check_t);
+                //rwrf.WasVotedId = str__json;
+                //appDbContext.People.Update(rwrf);
+                //appDbContext.SaveChanges();
+                ResultView resultView = new ResultView();
+                resultView.Names = name_list;
+                resultView.Votes = votes_list;
+                resultView.Percents = percents;
+                resultView.id = elect.Id;
+                if (elect.Status == "Actual")
+                {
+                    resultView.Active = true;
+                }
+                else
+                {
+                    resultView.Active = false;
+                }
+                for (int i = 0; i < resultView.Percents.Count; i++)
+                {
+                    if (resultView.Percents.Count == resultView.Votes.Count)
+                    {
+                        if (Double.IsNaN(resultView.Percents[i]) || double.IsInfinity(resultView.Percents[i]))
+                        {
+                            resultView.Percents[i] = 0;
+                        }
+                        if (Double.IsNaN(resultView.Votes[i]) || double.IsInfinity(resultView.Votes[i]))
+                        {
+                            resultView.Votes[i] = 0;
+                        }
+                    }
+
+                }
+
+                ViewData["Id"] = resultView.id;
+                JsonView json = new JsonView() { json = JsonConvert.SerializeObject(resultView) };
+                var result=Json(resultView);
+                return result;
+
+
+                //return View(resultView);
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+      
+
     }
 }

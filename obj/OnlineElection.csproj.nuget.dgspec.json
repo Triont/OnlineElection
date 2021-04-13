@@ -72,6 +72,10 @@
               "target": "Package",
               "version": "[2.10.1, )"
             },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "System.Dynamic.Runtime": {
               "target": "Package",
               "version": "[4.3.0, )"

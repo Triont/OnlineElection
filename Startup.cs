@@ -32,6 +32,7 @@ namespace OnlineElection
             services.AddTransient<JSONService<Dictionary<string, long>>>();
             services.AddControllersWithViews();
             services.AddMvc();
+          
             services.AddTransient<HashSevice>();
             services.AddTransient<EmailSendService>();
             services.AddSingleton<IHostedService, ServiceT>();
@@ -72,7 +73,7 @@ namespace OnlineElection
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+          
             app.UseRouting();
             app.UseAuthentication();
 
@@ -83,6 +84,7 @@ namespace OnlineElection
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             }
          );
         }

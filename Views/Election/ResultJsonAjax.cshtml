@@ -1,0 +1,93 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using OnlineElection.ModelView
+@model JsonView
+@{
+}
+<div>
+<div id ="ViewID">
+    @Html.GetJson(Model.json).id
+</div>
+
+    <table id="refresh">
+        <thead>
+            <tr>
+          <th scope="col">Id</th>
+      <th scope="col">Name</th>
+       <th scope="col">Vote</th>
+         <th scope="col">Percents</th>
+
+       </tr>
+       </thead>
+       <tbody>
+   @for(int i=0;i<   @Html.GetJson(Model.json).Names.Count;i++)
+   {
+       
+       <tr>
+       <td>
+            @i
+       </td>
+        <td>
+            @Html.GetJson(Model.json).Names[i]
+       </td>
+        <td>
+            @Html.GetJson(Model.json).Votes[i]
+       </td>
+        <td>
+            @Html.GetJson(Model.json).Percents[i]
+       </td>
+       </tr>
+   }
+
+       </tbody>
+    </table>
+    @Html.TextBox("Text");
+    <input type="button" id="butt" value="button"/>
+</div>
+
+@section Scripts
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript">
+       
+    $(document).ready(function () {
+    var myInterval = setInterval(function () {
+        getProgress();
+    }, 5000);
+});
+
+function getProgress() {
+    var ttt= document.getElementById("ViewID").innerHTML;
+     
+    //var id=@Html.GetJson(Model.json).id;
+var tmp=ttt.toString();
+var url_ar='/Values/Get/';
+var res=url_ar+tmp;
+
+    $.ajax({
+        type: "GET",      
+        url:res ,
+          //data: {Id:'1'},
+     // dataType: 'json',
+        contentType: 'application/json',
+        processData: false,
+        success: function (response) {
+           
+        //   alert('succeess');
+            console.log(response);
+          
+            
+          
+        },
+        error: function (response) {
+           alert("error")   
+        }
+
+    });
+}
+
+
+</script>
+
+}

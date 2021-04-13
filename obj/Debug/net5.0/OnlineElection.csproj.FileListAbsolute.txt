@@ -186,3 +186,8 @@ C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Raz
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\Edit.cshtml.g.cs
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\EditView.cshtml.g.cs
 C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\User\PasswordRetry.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Election\AlreadyVoted.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Shared\PageNotFound.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Election\ResultJsonAjax.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Election\ResultJson.cshtml.g.cs
+C:\Users\user\source\repos\OnlineElection_02\OnlineElection\obj\Debug\net5.0\Razor\Views\Values\ResultJson.cshtml.g.cs

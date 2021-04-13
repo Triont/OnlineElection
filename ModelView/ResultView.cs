@@ -7,6 +7,7 @@ namespace OnlineElection.ModelView
 {
     public class ResultView
     {
+        public long id { get; set; }
         public List<long> Votes { get; set; }
         public List<string> Names { get; set; }
         public List<double> Percents { get; set; }
