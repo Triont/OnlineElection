@@ -57,22 +57,19 @@ var test;
 function getProgress() {
     var ttt= document.getElementById("ViewID").innerHTML;
      var qqq= @Html.GetJson(Model.json).id;
-    //var id=@Html.GetJson(Model.json).id;
+   
 var tmp=ttt.toString();
 var url_ar='/Values/Get/';
-var res=url_ar+tmp;
+
 
     $.ajax({
         type: "GET",      
         url:'/Election/ResultJson' ,
          data: {Id:qqq},
-     // dataType: 'json',
-    //    contentType: 'application/json',
-      //  processData: false,
+  
         success: function (response) {
-          //  console.log(response);
-          //  console.log(typeof response);
-         //   var res_t=JSON.parse(response.toString());
+        
+       
            var q_tb= document.getElementById("refresh");
            for(var  i_q=0;i_q<q_tb.rows.length;i_q++)
            {
@@ -95,10 +92,7 @@ var res=url_ar+tmp;
                       
                   }
            }
-         //   location.reload();
-        //   alert('succeess');
-       //     console.log(response);
-            
+   
 
             
           
