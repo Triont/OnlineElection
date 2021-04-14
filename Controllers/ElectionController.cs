@@ -531,13 +531,12 @@ namespace OnlineElection.Controllers
 
 
 
-        [HttpPost]
+        [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ResultJson([FromBody]string Id)
+        public async Task<IActionResult> ResultJson(long Id)
         {
-            long id;
-            long.TryParse(Id,out id);
-            var elect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == id);
+           
+            var elect = await appDbContext.Elections.FirstOrDefaultAsync(i => i.Id == Id);
             if (elect != null)
             {
 

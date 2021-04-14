@@ -10,24 +10,22 @@
     @Html.GetJson(Model.json).id
 </div>
 
-    <table id="refresh">
+    <table>
         <thead>
             <tr>
-          <th scope="col">Id</th>
+
       <th scope="col">Name</th>
        <th scope="col">Vote</th>
          <th scope="col">Percents</th>
 
        </tr>
        </thead>
-       <tbody>
+       <tbody id ="refresh">
    @for(int i=0;i<   @Html.GetJson(Model.json).Names.Count;i++)
    {
        
        <tr>
-       <td>
-            @i
-       </td>
+    
         <td>
             @Html.GetJson(Model.json).Names[i]
        </td>
@@ -42,8 +40,7 @@
 
        </tbody>
     </table>
-    @Html.TextBox("Text");
-    <input type="button" id="butt" value="button"/>
+ 
 </div>
 
 @section Scripts
@@ -56,10 +53,10 @@
         getProgress();
     }, 5000);
 });
-
+var test;
 function getProgress() {
     var ttt= document.getElementById("ViewID").innerHTML;
-     
+     var qqq= @Html.GetJson(Model.json).id;
     //var id=@Html.GetJson(Model.json).id;
 var tmp=ttt.toString();
 var url_ar='/Values/Get/';
@@ -67,16 +64,42 @@ var res=url_ar+tmp;
 
     $.ajax({
         type: "GET",      
-        url:res ,
-          //data: {Id:'1'},
+        url:'/Election/ResultJson' ,
+         data: {Id:qqq},
      // dataType: 'json',
-        contentType: 'application/json',
-        processData: false,
+    //    contentType: 'application/json',
+      //  processData: false,
         success: function (response) {
-           
+            console.log(response);
+            console.log(typeof response);
+         //   var res_t=JSON.parse(response.toString());
+           var q_tb= document.getElementById("refresh");
+           for(var  i_q=0;i_q<q_tb.rows.length;i_q++)
+           {
+                  for(var j_q=0; j_q<q_tb.rows[i_q].cells.length;j_q++)
+                  {
+                      switch(j_q)
+                      {
+                            case 0:
+                              q_tb.rows[i_q].cells[j_q].innerHTML=response.names[i_q];
+                              break;
+                               case 1:
+                              q_tb.rows[i_q].cells[j_q].innerHTML=response.votes[i_q];
+                              break;
+                               case 2:
+                              q_tb.rows[i_q].cells[j_q].innerHTML=response.percents[i_q];
+                              break;
+                            
+                      }
+
+                      
+                  }
+           }
+         //   location.reload();
         //   alert('succeess');
             console.log(response);
-          
+            
+
             
           
         },
