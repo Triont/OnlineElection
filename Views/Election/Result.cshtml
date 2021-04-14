@@ -43,23 +43,25 @@
        <div>
          @if(Model.Active)
          {
-             @if(Double.IsNaN( Model.Percents[0]))
+             @if(Double.IsNaN( Model.Percents[0])||Model.Votes[0]==0)
              {
                   <p>  No one candidates has votes</p>
              }
              else
              {
           <p>   @Model.Names[0] is winning with @Model.Votes[0] and @Model.Percents[0] % now</p>
+          
           }
          }
          else
          {
-             if(Double.IsNaN(Model.Percents[0]))
+             if(Double.IsNaN(Model.Percents[0]) ||Model.Votes[0]==0 )
              {
             <p>  No one candidates has votes</p>
             }
             else
             {
+
                   <p>  Winner is @Model.Names[0] with @Model.Votes[0] votes and @Model.Percents[0]%</p>
         
             }
@@ -72,8 +74,44 @@
           </table>
       
 
+          <div>
+              
+              @Html.ActionLink("Result as table", "ResultJsonAjax", new {id=Model.id})
+          </div>
 </div>
+@*@section Scripts
+{
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script type="text/javascript">
+       
+    $(document).ready(function () {
+    var myInterval = setInterval(function () {
+        getProgress();
+    }, 5000);
+});
 
+function getProgress() {
+    $.ajax({
+        type: "GET",
+        data: {id:@Model.id},
+        url: "/Election/ResultJson",
+     //   dataType: 'text json',
+        contentType: 'application/json; charset=utf-8',
+        processData: false,
+        success: function (response) {
+           
+          
+           console.log(response);
+            alert('succeess');
+            
+          
+        },
+        error: function (response) {
+           alert("error")   
+        }
+
+    });
+}*@
 @*/*
         var id=@Model.id;
   $.ajax({
@@ -92,6 +130,22 @@
             },
         });
     });*/*@
+
+ @*  /* (function worker() {
+  $.ajax({
+    url: '/Election/Result',
+        data:{ id:ID},  
+    success: function(datas) {
+      
+    },
+    complete: function() {
+      // Schedule the next request when the current one's complete
+      setTimeout(worker, 500);
+    }
+  });
+})();*/*@
+
+</script>
 
 
 
