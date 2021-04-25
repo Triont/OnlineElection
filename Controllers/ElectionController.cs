@@ -555,7 +555,7 @@ namespace OnlineElection.Controllers
                 //appDbContext.SaveChanges();
 
                 var winner_votes = deserial.Values.OrderByDescending(i => i).Select(k => k);
-                var nameQueue = deserial.OrderByDescending(i => i.Value).Select(i => i.Key);
+                    var nameQueue = deserial.OrderByDescending(i => i.Value).Select(i => i.Key);
                 var winner = nameQueue.FirstOrDefault();
 
                 var votes_list = winner_votes.ToList();

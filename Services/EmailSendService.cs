@@ -14,6 +14,14 @@ using Microsoft.Extensions.Logging;
 
 namespace OnlineElection.Services
 {
+  public interface ISendAsync
+    {
+        Task<string> SendAsync();
+    }
+    public interface ISendEmailAsync:ISendAsync
+    {
+     
+    }
     public class EmailSendService
     {
     // private static ILogger Logger { get; set; }

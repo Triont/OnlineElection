@@ -33,7 +33,7 @@ namespace OnlineElection
             services.AddControllersWithViews();
             services.AddMvc();
           
-            services.AddTransient<HashSevice>();
+            services.AddTransient<IHash,HashSevice>();
             services.AddTransient<EmailSendService>();
             services.AddSingleton<IHostedService, ServiceT>();
             var serviceProvider = services.BuildServiceProvider();

@@ -8,10 +8,19 @@ using System.Text;
 
 namespace OnlineElection.Services
 {
-    public class HashSevice
+    public interface IHash
+    {
+        string GetHashStr(string input, int iter_count);
+        string GetHashStr(string input, byte[] salt, int iter_count);
+        string GetHashStr(string input,  int iter_count, out string salt);
+
+
+    }
+  
+    public class HashSevice:IHash
     {
 
-        public static string GetHashStr(string input, int iter_count)
+        public  string GetHashStr(string input, int iter_count)
         {
             var Rdgn = RandomNumberGenerator.Create();
             byte[] temparr = new byte[128];
@@ -27,7 +36,7 @@ namespace OnlineElection.Services
             }
             return Convert.ToBase64String(temp);
         }
-        public static string GetHashStr(string input, int iter_count, out string salt)
+        public  string GetHashStr(string input, int iter_count, out string salt)
         {
             var Rdgn = RandomNumberGenerator.Create();
             byte[] temparr = new byte[128];
@@ -45,7 +54,7 @@ namespace OnlineElection.Services
             salt = Convert.ToBase64String(temparr);
             return Convert.ToBase64String(temp);
         }
-        public static string GetHashStr(string input, byte[] salt, int iter_count)
+        public  string GetHashStr(string input, byte[] salt, int iter_count)
         {
             byte[] temp = Encoding.ASCII.GetBytes(input);
        //     byte[] _salt = Encoding.ASCII.GetBytes(salt);

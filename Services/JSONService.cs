@@ -7,6 +7,13 @@ using System.Text.Json.Serialization;
 
 namespace OnlineElection.Services
 {
+
+    public interface IConvert<T>
+    {
+        string ConvertTo(T e);
+        T ConvertFrom(string s);
+    }
+
     public class JSONService<T>
 
 

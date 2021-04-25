@@ -31,12 +31,15 @@ namespace OnlineElection.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext appDbContext;
         private readonly EmailSendService email;
+        private readonly IHash hash;
 
-        public User(ILogger<HomeController> logger, AppDbContext appDbContext, EmailSendService email)
+        public User(ILogger<HomeController> logger, AppDbContext appDbContext, EmailSendService email,
+             IHash hash)
         {
             _logger = logger;
             this.appDbContext = appDbContext;
             this.email = email;
+            this.hash = hash;
         }
         public ActionResult Index()
         {
@@ -180,7 +183,7 @@ namespace OnlineElection.Controllers
                 {
                     var temp_pass = loginUser.Password;
                     var tmp_s = Convert.FromBase64String(p.Salt);
-                    var tmp_res = HashSevice.GetHashStr(temp_pass, tmp_s, 10000);
+                    var tmp_res = hash.GetHashStr(temp_pass, tmp_s, 10000);
                     if (tmp_res == p.Pass)
                     {
                         //if(p.WasVotedId!=null)
@@ -269,7 +272,7 @@ namespace OnlineElection.Controllers
             if(userChangePass!=null)
             {
                 string salt;
-                var hashedPass = HashSevice.GetHashStr(newPass.Pass, 10000, out salt);
+                var hashedPass = hash.GetHashStr(newPass.Pass, 10000, out salt);
                 userChangePass.Pass = hashedPass;
                 userChangePass.Salt = salt;
                 appDbContext.People.Update(userChangePass);
@@ -344,7 +347,7 @@ namespace OnlineElection.Controllers
             EditViewModel editViewModel = new EditViewModel();
             if(curUser!=null)
             {
-              var tmp=  HashSevice.GetHashStr(checkPass.Pass, Convert.FromBase64String(curUser.Salt), 10000);
+              var tmp=  hash.GetHashStr(checkPass.Pass, Convert.FromBase64String(curUser.Salt), 10000);
            
                 if(tmp==curUser.Pass)
                 {
