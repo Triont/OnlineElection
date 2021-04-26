@@ -30,17 +30,17 @@ namespace OnlineElection.Controllers
 
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext appDbContext;
-        private readonly EmailSendService email;
+      //  private readonly EmailSendService email;
         private readonly IHash hash;
         private readonly ITokenGenerator tokenGenerator;
         private readonly ISendEmailAsync sendEmailAsync;
 
-        public User(ILogger<HomeController> logger, AppDbContext appDbContext, EmailSendService email,
+        public User(ILogger<HomeController> logger, AppDbContext appDbContext,
              IHash hash, ITokenGenerator token, ISendEmailAsync sendEmailAsync)
         {
             _logger = logger;
             this.appDbContext = appDbContext;
-            this.email = email;
+        //    this.email = email;
             this.hash = hash;
             this.tokenGenerator = token;
             this.sendEmailAsync = sendEmailAsync;
