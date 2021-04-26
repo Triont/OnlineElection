@@ -27,7 +27,7 @@ namespace OnlineElection.Controllers
         //public void PY()
         //{
         //    ScriptEngine engine = Python.CreateEngine();
-        //    engine.Execute("print 'hello, world'");
+      
         //}
         public IActionResult Index()
         {

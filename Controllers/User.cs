@@ -32,14 +32,18 @@ namespace OnlineElection.Controllers
         private readonly AppDbContext appDbContext;
         private readonly EmailSendService email;
         private readonly IHash hash;
+        private readonly ITokenGenerator tokenGenerator;
+        private readonly ISendEmailAsync sendEmailAsync;
 
         public User(ILogger<HomeController> logger, AppDbContext appDbContext, EmailSendService email,
-             IHash hash)
+             IHash hash, ITokenGenerator token, ISendEmailAsync sendEmailAsync)
         {
             _logger = logger;
             this.appDbContext = appDbContext;
             this.email = email;
             this.hash = hash;
+            this.tokenGenerator = token;
+            this.sendEmailAsync = sendEmailAsync;
         }
         public ActionResult Index()
         {
@@ -292,7 +296,9 @@ namespace OnlineElection.Controllers
             var user = await appDbContext.People.FirstOrDefaultAsync(i => i.Email == forgotten.Email);
             if (user != null)
             {
-               var token=await email.Token(user);
+
+                var token = await tokenGenerator.Token(user);
+              // var token=await email.Token(user);
                 StringBuilder path = new StringBuilder(Request.Scheme);
                 path.Append("://");
                 path.Append(Request.Host.Value);
@@ -324,8 +330,12 @@ namespace OnlineElection.Controllers
                 }) ;
                 await appDbContext.SaveChangesAsync();
 
-                var log_tmp = await EmailSendService.SendEmailAsync(user.Email, "Reset password", path.ToString());
-                _logger.LogInformation(log_tmp);
+                 sendEmailAsync.Subject = "Reset password";
+                sendEmailAsync.Message = path.ToString();
+                sendEmailAsync.EmailTo = user.Email;
+             var check=   await sendEmailAsync.SendAsync();
+                //var log_tmp = await EmailSendService.SendEmailAsync(user.Email, "Reset password", path.ToString());
+                //_logger.LogInformation(log_tmp);
 
                 return RedirectToAction("Login");
             }
@@ -527,7 +537,7 @@ namespace OnlineElection.Controllers
         
           //  var tmp_res = s + "/User/ConfirmEmail";
           //  var ttt = tmp_res + "/?token=";
-            var token =await email.Token(_person);
+            var token =await tokenGenerator.Token(_person);
             StringBuilder stringBuilder = new StringBuilder(token);
             stringBuilder.Replace("+", "%2B");
             path.Append(stringBuilder.ToString());
@@ -543,9 +553,12 @@ namespace OnlineElection.Controllers
                
             });
             await appDbContext.SaveChangesAsync();
+
+             sendEmailAsync.SetData(_person.Email, "Confirm", path.ToString());
+            await sendEmailAsync.SendAsync();
       
-          var log_tmp=  await EmailSendService.SendEmailAsync(_person.Email, "Confirm", path.ToString());
-            _logger.LogInformation(log_tmp);
+          //var log_tmp=  await EmailSendService.SendEmailAsync(_person.Email, "Confirm", path.ToString());
+          //  _logger.LogInformation(log_tmp);
         
             return RedirectToAction("Login");
         }

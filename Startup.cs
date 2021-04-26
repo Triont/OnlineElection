@@ -34,6 +34,8 @@ namespace OnlineElection
             services.AddMvc();
           
             services.AddTransient<IHash,HashSevice>();
+            services.AddSingleton<ITokenGenerator, TokenGenerator>();
+            services.AddSingleton<ISendEmailAsync, EmailService>();
             services.AddTransient<EmailSendService>();
             services.AddSingleton<IHostedService, ServiceT>();
             var serviceProvider = services.BuildServiceProvider();
